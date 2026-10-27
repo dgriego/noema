@@ -1,0 +1,119 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { site } from '../config/site';
+
+const portrait =
+  'https://images.squarespace-cdn.com/content/v1/68bdc17cbdcca60b479128dc/96208cd1-a664-4fde-a0ff-ba3177808eb6/MarthaRoarkInteriorDesignJPG.JPG';
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: site.owner,
+    jobTitle: 'Principal Designer & Owner',
+    worksFor: { '@id': `${site.url}/#business` },
+    image: portrait,
+    homeLocation: { '@type': 'Place', name: 'Portland, Oregon' },
+  },
+];
+---
+
+<Base
+  title="About Martha Roark, Portland Interior Designer"
+  description="Meet Martha Roark, founder of Noema, a Portland interior designer crafting timeless, personal spaces that reflect memory, meaning, and everyday life."
+  image={portrait}
+  schema={schema}
+>
+  <section class="wrap page-head">
+    <span class="eyebrow">About Noema</span>
+    <h1>Design guided by <em>meaning, memory,</em> and <em>perception.</em></h1>
+    <p class="lead">
+      The name Noema comes from philosophy. It speaks to meaning, memory, and perception, and that’s what every project aims to capture: spaces that hold beauty,
+      story, and a lasting sense of place.
+    </p>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap bio">
+      <div class="portrait">
+        <Image src={portrait} alt={`${site.owner}, principal designer and owner of Noema Interior Design`} inferSize widths={[400, 800]} sizes="(max-width: 800px) 100vw, 40vw" loading="eager" fetchpriority="high" />
+      </div>
+      <div class="prose">
+        <h2>Martha Roark</h2>
+        <p class="role">Principal Designer / Owner</p>
+        <p>
+          I’m Martha Roark, founder of Noema, an interior design studio based in Portland, Oregon. My work is guided by the belief that great design is not just
+          about how a space looks, but about how it feels and functions in daily life.
+        </p>
+        <p>
+          I was raised in New Mexico, primarily Santa Fe, where the sun shines bright and the landscape is beautiful everywhere you look. From a very young age I
+          remember admiring beautiful spaces: noticing how a space felt, analyzing why it felt that way, and planning in my mind how I would redesign the rooms I came
+          across. That fire still burns in me today.
+        </p>
+        <p>
+          Now, with the education and experience to back it up, my purpose is not only to make spaces more beautiful but to give them meaning: an experience
+          that stays with you.
+        </p>
+        <p>When I’m not designing, you can find me baking a cake, walking my dog, lifting weights, or watching a sci-fi or fantasy film or show.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap values">
+      <div>
+        <h3>Personal</h3>
+        <p>Every project starts by listening to your story, your routines, and what you hope your space can become.</p>
+      </div>
+      <div>
+        <h3>Intentional</h3>
+        <p>Each choice, from layout to lighting to a single object, earns its place by serving how the space is used.</p>
+      </div>
+      <div>
+        <h3>Lasting</h3>
+        <p>A balance of playfulness and longevity, so rooms feel fresh now and keep feeling right for years.</p>
+      </div>
+    </div>
+  </section>
+
+</Base>
+
+<style>
+  .bio {
+    display: grid;
+    grid-template-columns: 0.8fr 1fr;
+    gap: clamp(2rem, 6vw, 6rem);
+    align-items: start;
+  }
+  .portrait :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+  .role {
+    font-size: 0.8rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .values {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+  }
+  .values h3 {
+    border-top: 1px solid var(--ink);
+    padding-top: 1.25rem;
+  }
+  .values p {
+    color: var(--ink-soft);
+  }
+  @media (max-width: 860px) {
+    .bio,
+    .values {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

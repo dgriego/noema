@@ -1,0 +1,556 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { services } from '../data/services';
+import { site, bookHref } from '../config/site';
+
+const featured = (await getCollection('projects', (p) => p.data.featured)).sort((a, b) => a.data.order - b.data.order);
+
+const cdn = 'https://images.squarespace-cdn.com/content/v1/68bdc17cbdcca60b479128dc';
+const strip = [
+  { src: `${cdn}/1757270066594-Y3X18YYXF3LHSTP7W5SM/RestaurantInteriorDesignPortland_3.JPG`, href: '/portfolio/restaurant-interior-design', alt: 'Portland restaurant bar interior' },
+  { src: `${cdn}/1786985993276-3SRUF1JIA2KODM8Z6XMA/DGS01539.JPG`, href: '/portfolio/kitchen-remodel', alt: 'Portland kitchen remodel' },
+  { src: `${cdn}/1793037566008-233JLCN7ZZHVB3UCCG8C/DGS01649.jpg`, href: '/portfolio/interior-decorating', alt: 'Decorated living space' },
+  { src: `${cdn}/1757289363554-WP9VL32Y159WC8H4WZF3/InteriorStyling_1.JPG`, href: '/portfolio/residential-styling', alt: 'Residential styling' },
+  { src: `${cdn}/1757270061182-IGASFDNMRZ440QV39MC2/RestaurantInteriorDesignPortland_8.JPG`, href: '/portfolio/restaurant-interior-design', alt: 'Restaurant dining room' },
+  { src: `${cdn}/1786985992379-6KLMOKK08MLFNOSWRGC6/DGS01536.JPG`, href: '/portfolio/kitchen-remodel', alt: 'Kitchen detail' },
+  { src: `${cdn}/1793037562116-75NA32VK4U4NZQIF61F9/DGS01645.JPG`, href: '/portfolio/interior-decorating', alt: 'Interior decorating detail' },
+  { src: `${cdn}/1757289409393-SVVQ21RIA8RUTOB62AQ5/InteriorStyling_3.JPG`, href: '/portfolio/residential-styling', alt: 'Styled shelving and decor' },
+];
+
+const collageA = `${cdn}/cd3a23d6-ceda-4fd3-9537-9bf393541e28/DGS01535.jpg`;
+const collageB = `${cdn}/1793039486551-IWZMZYSIQLNK4JSG9LC8/DGS01621.jpg`;
+const portrait = `${cdn}/96208cd1-a664-4fde-a0ff-ba3177808eb6/MarthaRoarkInteriorDesignJPG.JPG`;
+
+const marquee = ['Residential Design', 'Commercial Design', 'Virtual Design', 'Styling', 'Consultations'];
+const beliefs = ['personal', 'intentional', 'lasting', 'meaningful'];
+---
+
+<Base
+  description="Noema is a Portland, Oregon interior design studio creating personal, intentional spaces. Residential, commercial, and virtual interior design, styling, and consultations."
+>
+  <section class="hero">
+    <div class="wrap hero-meta">
+      <span class="label">Interior Design Studio</span>
+      <span class="label">Portland, Oregon</span>
+    </div>
+    <div class="wrap hero-body">
+      <h1 class="statement">
+        Interior design for spaces that hold <em>beauty, story, and meaning,</em> designed for how you live, work, and <em>remember.</em>
+      </h1>
+      <div class="hero-actions">
+        <a href={bookHref} class="btn btn--solid">Book a Discovery Call</a>
+        <a href="/portfolio" class="btn btn--slate">View Portfolio</a>
+      </div>
+    </div>
+
+    <div class="strip-wrap">
+      <ul class="strip" aria-label="Recent project photos" tabindex="0">
+        {
+          strip.map((img, i) => (
+            <li>
+              <a href={img.href}>
+                <Image src={img.src} alt={img.alt} inferSize widths={[180, 260, 340, 480]} sizes="(max-width: 900px) 170px, 240px" loading={i < 4 ? 'eager' : 'lazy'} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="strip-nav" hidden>
+        <button type="button" class="arrow" data-dir="-1" aria-label="Scroll photos left">←</button>
+        <button type="button" class="arrow" data-dir="1" aria-label="Scroll photos right">→</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="marquee" aria-label="Services">
+    <button type="button" class="motion-toggle" aria-pressed="false">Pause motion</button>
+    <div class="marquee-track">
+      {
+        [0, 1].map((n) => (
+          <div class="marquee-group" aria-hidden={n === 1 ? 'true' : undefined}>
+            {marquee.map((m) => (
+              <span>{m}</span>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap believe">
+      <div class="collage">
+        <Image src={collageA} alt="Kitchen designed by Noema Interior Design" inferSize widths={[500, 900]} sizes="(max-width: 900px) 80vw, 40vw" class="c-a" />
+        <Image src={collageB} alt="Decorated living space by Noema Interior Design" inferSize widths={[300, 600]} sizes="(max-width: 900px) 50vw, 22vw" class="c-b" />
+      </div>
+      <div class="believe-text">
+        <span class="eyebrow">Our Philosophy</span>
+        <h2 class="believe-h">
+          <span class="line">I believe in</span>
+          <span class="visually-hidden">{beliefs.join(', ')}</span>
+          <span class="words" aria-hidden="true">
+            <span class="words-track">
+              {[...beliefs, ...beliefs].map((w) => <span class="word">{w} —</span>)}
+            </span>
+          </span>
+          <span class="line">design.</span>
+        </h2>
+        <p class="lead">Noema = meaning + memory + perception.</p>
+        <p>
+          Design should be both imaginative and intentional: interiors that feel deeply personal while serving their purpose beautifully. That means
+          listening closely, understanding your needs, and translating them into thoughtful, lasting design solutions, for homes and businesses alike.
+        </p>
+        <a href="/about" class="btn">Meet the Designer</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap">
+      <div class="head-row">
+        <div>
+          <span class="eyebrow">Services</span>
+          <h2>Design support for <em>every</em> kind of project</h2>
+        </div>
+        <a href="/services" class="link-arrow">Services & pricing</a>
+      </div>
+      <ol class="index">
+        {
+          services.map((s, i) => (
+            <li>
+              <a href={`/services#${s.id}`}>
+                <span class="i-num">{String(i + 1).padStart(2, '0')}</span>
+                <span class="i-title">{s.title}</span>
+                <span class="i-sum">{s.summary}</span>
+                <span class="i-price">{s.price}</span>
+                <span class="i-arrow" aria-hidden="true">→</span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="head-row">
+        <div>
+          <span class="eyebrow">Selected Work</span>
+          <h2>Recent <em>projects</em></h2>
+        </div>
+        <a href="/portfolio" class="link-arrow">Full portfolio</a>
+      </div>
+      <div class="projects">
+        {featured.map((p, i) => <ProjectCard project={p} index={i} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--slate">
+    <div class="wrap about">
+      <div class="portrait">
+        <Image src={portrait} alt={`${site.owner}, principal designer and owner of Noema Interior Design`} inferSize widths={[400, 700]} sizes="(max-width: 800px) 100vw, 36vw" />
+      </div>
+      <div>
+        <span class="eyebrow">The Designer</span>
+        <h2>Hi, I’m <em>Martha.</em></h2>
+        <p class="lead">
+          I founded Noema, an interior design studio in Portland, Oregon. Great design isn’t just how a space looks; it’s how it feels and functions every day.
+        </p>
+        <p>
+          Raised in Santa Fe, New Mexico, I grew up analyzing why beautiful rooms felt the way they did and redesigning them in my head. Now, with the education
+          and experience to back it up, I create spaces whose meaning stays with you.
+        </p>
+        <a href="/about" class="btn btn--light">More About Noema</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Pause/resume all looping motion; the choice is remembered per visitor.
+  const toggle = document.querySelector<HTMLButtonElement>('.motion-toggle');
+  const setPaused = (paused: boolean) => {
+    document.documentElement.classList.toggle('motion-paused', paused);
+    toggle?.setAttribute('aria-pressed', String(paused));
+    if (toggle) toggle.textContent = paused ? 'Play motion' : 'Pause motion';
+    try {
+      localStorage.setItem('noema-motion-paused', paused ? '1' : '0');
+    } catch {}
+  };
+  let stored = false;
+  try {
+    stored = localStorage.getItem('noema-motion-paused') === '1';
+  } catch {}
+  setPaused(stored);
+  toggle?.addEventListener('click', () => setPaused(!document.documentElement.classList.contains('motion-paused')));
+
+  // Arrow buttons for the photo strip, shown only when it actually overflows.
+  const strip = document.querySelector<HTMLElement>('.strip');
+  const nav = document.querySelector<HTMLElement>('.strip-nav');
+  if (strip && nav) {
+    const [prev, next] = nav.querySelectorAll<HTMLButtonElement>('.arrow');
+    const update = () => {
+      const overflow = strip.scrollWidth > strip.clientWidth + 4;
+      nav.hidden = !overflow;
+      prev.disabled = strip.scrollLeft <= 4;
+      next.disabled = strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 4;
+    };
+    nav.querySelectorAll<HTMLButtonElement>('.arrow').forEach((btn) =>
+      btn.addEventListener('click', () => strip.scrollBy({ left: Number(btn.dataset.dir) * strip.clientWidth * 0.8, behavior: 'smooth' })),
+    );
+    strip.addEventListener('scroll', update, { passive: true });
+    // ResizeObserver fires once on observe, so no synchronous layout read at startup.
+    new ResizeObserver(() => requestAnimationFrame(update)).observe(strip);
+  }
+</script>
+
+<style>
+  /* Hero: centered statement + filmstrip */
+  .hero {
+    padding-top: 1.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-meta {
+    display: flex;
+    justify-content: space-between;
+  }
+  .hero-body {
+    text-align: center;
+    padding-block: clamp(3.5rem, 9vw, 7rem) clamp(3rem, 6vw, 4.5rem);
+  }
+  .statement {
+    font-size: clamp(2.1rem, 4.6vw, 4.1rem);
+    line-height: 1.08;
+    max-width: 22ch;
+    margin-inline: auto;
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+  .strip {
+    list-style: none;
+    margin: 0;
+    padding: 0 var(--gutter) clamp(2rem, 4vw, 3rem);
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+  /* Snapping helps swipes but fights the arrow buttons, so mouse users don't get it. */
+  @media (pointer: fine) {
+    .strip {
+      scroll-snap-type: none;
+    }
+  }
+  .strip::-webkit-scrollbar {
+    display: none;
+  }
+  .strip li {
+    flex: 0 0 clamp(150px, 17vw, 240px);
+    scroll-snap-align: start;
+  }
+  .strip a {
+    display: block;
+    overflow: hidden;
+  }
+  .strip :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+  .strip a:hover :global(img) {
+    transform: scale(1.06);
+  }
+
+  /* Marquee styled after the logo: light fill, slate outline */
+  /* Motion pauses on hover or via the toggle (WCAG 2.2.2); reduced-motion users never see it. */
+  @media (prefers-reduced-motion: reduce) {
+    .motion-toggle {
+      display: none;
+    }
+  }
+  .marquee:hover .marquee-track,
+  .words:hover .words-track,
+  :global(html.motion-paused) .marquee-track,
+  :global(html.motion-paused) .words-track {
+    animation-play-state: paused;
+  }
+  .motion-toggle {
+    position: absolute;
+    right: var(--gutter);
+    bottom: 0.6rem;
+    z-index: 1;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--slate);
+    font: 600 0.65rem/1 var(--font-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.55em 0.9em;
+    cursor: pointer;
+  }
+  .motion-toggle:hover {
+    border-color: var(--slate);
+  }
+  .strip-wrap {
+    position: relative;
+  }
+  .strip-nav {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 0 var(--gutter) clamp(1.5rem, 3vw, 2rem);
+    margin-top: -0.75rem;
+  }
+  .strip-nav[hidden] {
+    display: none;
+  }
+  .arrow {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--slate);
+    background: transparent;
+    color: var(--slate);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .arrow:hover:not(:disabled) {
+    background: var(--slate);
+    color: #fff;
+  }
+  .arrow:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+  .marquee {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+    padding-block: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 38s linear infinite;
+  }
+  .marquee-group {
+    display: flex;
+  }
+  .marquee span {
+    font: 400 clamp(3rem, 8vw, 7rem) / 1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    color: var(--slate-light);
+    -webkit-text-stroke: 2px var(--slate);
+    paint-order: stroke fill;
+    padding-right: 0.5em;
+    white-space: nowrap;
+  }
+  .marquee span::after {
+    content: '✦';
+    -webkit-text-stroke: 0;
+    color: var(--accent);
+    font-size: 0.35em;
+    vertical-align: middle;
+    margin-left: 0.5em;
+  }
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* Belief section */
+  .believe {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2.5rem, 7vw, 7rem);
+    align-items: center;
+  }
+  .believe > * {
+    min-width: 0;
+  }
+  .collage {
+    position: relative;
+    padding: 0 18% 22% 0;
+  }
+  .collage :global(.c-a) {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+  .collage :global(.c-b) {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 48%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border: 10px solid var(--bg);
+  }
+  .believe-h .line {
+    display: block;
+  }
+  .words {
+    display: block;
+    overflow: hidden;
+    margin: 0.1em -0.25rem;
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .words-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 16s linear infinite;
+  }
+  .word {
+    font-size: inherit;
+    font-style: italic;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1.25;
+    color: var(--accent);
+    padding-right: 0.35em;
+    white-space: nowrap;
+  }
+  .believe-text .lead {
+    margin-top: 1.5rem;
+    color: var(--slate);
+    font-weight: 500;
+  }
+  .believe-text p:not(.lead) {
+    color: var(--ink-soft);
+    margin-bottom: 2rem;
+  }
+
+  /* Section header row */
+  .head-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+  }
+  .head-row h2 {
+    max-width: 18ch;
+    margin: 0;
+  }
+
+  /* Services index list */
+  .index {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+  .index a {
+    display: grid;
+    grid-template-columns: 3.5rem minmax(0, 1.1fr) minmax(0, 1.4fr) 13rem 2rem;
+    gap: 1.5rem;
+    align-items: baseline;
+    padding-block: 1.75rem;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+    transition: padding 0.3s ease, color 0.3s;
+  }
+  .index a:hover {
+    padding-left: 1rem;
+  }
+  .index a:hover .i-title,
+  .index a:hover .i-arrow {
+    color: var(--accent);
+  }
+  .i-num,
+  .i-price {
+    font: 600 0.72rem/1 var(--font-label);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--slate-mid);
+  }
+  .i-title {
+    font-size: clamp(1.35rem, 2.2vw, 1.85rem);
+    letter-spacing: -0.02em;
+    color: var(--slate);
+    line-height: 1.15;
+    transition: color 0.3s;
+  }
+  .i-sum {
+    color: var(--ink-soft);
+    font-size: 0.98rem;
+  }
+  .i-price {
+    text-align: right;
+    line-height: 1.5;
+  }
+  .i-arrow {
+    color: var(--slate-mid);
+    font-size: 1.2rem;
+    transition: color 0.3s;
+  }
+
+  .projects {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .about {
+    display: grid;
+    grid-template-columns: 0.8fr 1fr;
+    gap: clamp(2.5rem, 7vw, 7rem);
+    align-items: center;
+  }
+  .portrait :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+  .about p:not(.lead) {
+    color: var(--slate-soft);
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 960px) {
+    .believe,
+    .about {
+      grid-template-columns: 1fr;
+    }
+    .projects {
+      grid-template-columns: 1fr 1fr;
+    }
+    .index a {
+      grid-template-columns: 2.5rem 1fr 1.5rem;
+      row-gap: 0.5rem;
+    }
+    .i-sum,
+    .i-price {
+      grid-column: 2;
+      text-align: left;
+    }
+    .i-arrow {
+      grid-column: 3;
+      grid-row: 1;
+    }
+  }
+  @media (max-width: 600px) {
+    .projects {
+      grid-template-columns: 1fr;
+    }
+    .hero-meta .label:last-child {
+      display: none;
+    }
+  }
+</style>

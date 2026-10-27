@@ -1,0 +1,286 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../config/site';
+
+// The form only renders once PUBLIC_FORM_ENDPOINT is set, so a missing setting can never
+// swallow an inquiry; until then visitors are pointed to phone, text, or email.
+const hasForm = Boolean(site.formEndpoint);
+---
+
+<Base
+  title="Contact & Book a Discovery Call"
+  description="Contact Noema, a Portland interior design studio. Book a complimentary discovery call about consultations, styling, virtual design, or full-service interiors."
+>
+  <section class="wrap page-head">
+    <span class="eyebrow">Contact</span>
+    <h1>Let’s start the <em>conversation.</em></h1>
+    <p class="lead">Whether you’re curious about a one-hour consultation or ready for a full project, I’d love to hear from you.</p>
+    <p class="quick">
+      Prefer to talk? <a href={site.phoneHref}>Call</a> or <a href={site.smsHref}>text</a>
+      <a href={site.phoneHref} class="quick-num">{site.phone}</a>
+    </p>
+  </section>
+
+  <section class="wrap contact">
+    {
+      hasForm ? (
+        <form method="POST" action={site.formEndpoint} class="form" data-inquiry novalidate>
+          <input type="hidden" name="_subject" value="New inquiry from noemainteriordesign.com" />
+          <input type="hidden" name="_next" value={`${site.url}/thanks`} />
+          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="visually-hidden" aria-hidden="true" />
+
+          <p class="req-note"><span aria-hidden="true">*</span> Required</p>
+          <div class="row">
+            <label>
+              <span>Name <b aria-hidden="true">*</b></span>
+              <input type="text" name="name" autocomplete="name" required />
+            </label>
+            <label>
+              <span>Email <b aria-hidden="true">*</b></span>
+              <input type="email" name="email" autocomplete="email" required />
+            </label>
+          </div>
+          <div class="row">
+            <label>
+              <span>Phone</span>
+              <input type="tel" name="phone" autocomplete="tel" />
+            </label>
+            <label>
+              <span>Project location</span>
+              <input type="text" name="location" placeholder="e.g. SE Portland, or virtual" />
+            </label>
+          </div>
+          <label>
+            <span>What can I help with? <b aria-hidden="true">*</b></span>
+            <select name="service" required>
+              <option value="">Select a service</option>
+              <option>Discovery call / not sure yet</option>
+              <option>Design consultation</option>
+              <option>Full-service residential design</option>
+              <option>Commercial interior design</option>
+              <option>Residential styling</option>
+              <option>Virtual design (e-design)</option>
+            </select>
+          </label>
+          <label>
+            <span>Tell me about your space <b aria-hidden="true">*</b></span>
+            <textarea name="message" rows="6" required placeholder="The rooms involved, your timeline, and anything you’re dreaming about." />
+          </label>
+          <div class="submit">
+            <button type="submit" class="btn btn--solid">Send Inquiry</button>
+            <p class="status" role="status" aria-live="polite"></p>
+          </div>
+        </form>
+      ) : (
+        <div class="form-off">
+          <h2>Get in touch</h2>
+          <p>The fastest way to reach me is a call or text. Tell me a little about your space and we’ll set up your complimentary discovery call.</p>
+          <div class="form-off-actions">
+            <a href={site.phoneHref} class="btn btn--solid">Call {site.phone}</a>
+            <a href={site.smsHref} class="btn btn--slate">Send a Text</a>
+            {site.email && <a href={`mailto:${site.email}`} class="btn btn--slate">Email</a>}
+          </div>
+        </div>
+      )
+    }
+
+    <aside class="aside">
+      <div>
+        <h2 class="h">Call or text</h2>
+        <p><a href={site.phoneHref}>{site.phone}</a></p>
+      </div>
+      {
+        site.email && (
+          <div>
+            <h2 class="h">Email</h2>
+            <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
+          </div>
+        )
+      }
+      <div>
+        <h2 class="h">Studio</h2>
+        <p>Based in {site.city}, Oregon<br />In person across the Portland metro<br />Virtual design available anywhere</p>
+      </div>
+      <div>
+        <h2 class="h">What happens next</h2>
+        <p>I’ll be in touch to schedule your complimentary 15-minute discovery call.</p>
+      </div>
+    </aside>
+  </section>
+</Base>
+
+<script>
+  // Progressive enhancement: send via fetch so errors show inline. Without JS the form
+  // posts normally and the provider redirects to /thanks.
+  const form = document.querySelector<HTMLFormElement>('form[data-inquiry]');
+  if (form) {
+    const status = form.querySelector<HTMLElement>('.status')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      status.className = 'status';
+
+      if (!form.checkValidity()) {
+        const firstInvalid = form.querySelector<HTMLElement>(':invalid');
+        form.classList.add('was-validated');
+        status.textContent = 'Please fill in the highlighted fields.';
+        status.classList.add('is-error');
+        firstInvalid?.focus();
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = 'Sending…';
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        window.location.href = '/thanks';
+      } catch {
+        status.innerHTML = 'Sorry, that didn’t go through. Please try again, or call/text <a href="tel:+15056297347">(505) 629-7347</a>.';
+        status.classList.add('is-error');
+        button.disabled = false;
+        button.textContent = 'Send Inquiry';
+      }
+    });
+  }
+</script>
+
+<style>
+  .contact {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: clamp(2rem, 6vw, 5rem);
+    padding-bottom: var(--section);
+  }
+  .form {
+    display: grid;
+    gap: 1.4rem;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.4rem;
+  }
+  label {
+    display: grid;
+    gap: 0.45rem;
+  }
+  label span {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  label b,
+  .req-note span {
+    color: var(--accent);
+  }
+  .req-note {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+  input,
+  select,
+  textarea {
+    font: inherit;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid #8a9699;
+    border-radius: 0;
+    padding: 0.85rem 1rem;
+    width: 100%;
+  }
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--slate);
+    box-shadow: 0 0 0 2px var(--slate);
+  }
+  .was-validated :invalid {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  .submit {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .submit .btn:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+  .status {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+  .status.is-error {
+    color: var(--accent);
+  }
+  .quick {
+    margin: 1.5rem 0 0;
+    font-family: var(--font-label);
+    font-weight: 500;
+    color: var(--ink-soft);
+  }
+  .quick a {
+    color: var(--accent);
+  }
+  .quick-num {
+    margin-left: 0.35rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .form-off {
+    align-self: start;
+  }
+  .form-off p {
+    color: var(--ink-soft);
+    max-width: 48ch;
+  }
+  .form-off-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .aside {
+    display: grid;
+    gap: 2rem;
+    align-content: start;
+    background: var(--bg-alt);
+    padding: 2.5rem;
+  }
+  .h {
+    font-family: var(--font-label);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .aside p {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+  .aside a {
+    font-family: var(--font-body);
+    font-size: 1.4rem;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  @media (max-width: 860px) {
+    .contact,
+    .row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

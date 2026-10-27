@@ -1,0 +1,145 @@
+---
+import { Font } from 'astro:assets';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../config/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+  /** Extra JSON-LD objects for this page (breadcrumbs, FAQ, etc.) */
+  schema?: Record<string, unknown>[];
+}
+
+const { title, description = site.description, image = site.ogImage, noindex = false, schema = [] } = Astro.props;
+
+const fullTitle = title ? `${title} | ${site.name}` : `${site.name} | Portland, OR Interior Designer`;
+const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', site.url).href;
+
+// LocalBusiness data on every page helps Google show Noema in local / map results.
+const business = {
+  '@context': 'https://schema.org',
+  '@type': 'HomeAndConstructionBusiness',
+  '@id': `${site.url}/#business`,
+  name: site.name,
+  description: site.description,
+  url: site.url,
+  telephone: site.phone,
+  ...(site.email && { email: site.email }),
+  image: site.ogImage,
+  founder: { '@type': 'Person', name: site.owner, jobTitle: 'Principal Designer' },
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: site.city,
+    addressRegion: site.region,
+    addressCountry: site.country,
+  },
+  geo: { '@type': 'GeoCoordinates', ...site.geo },
+  areaServed: site.areaServed.map((name) => ({ '@type': 'City', name })),
+  priceRange: '$$',
+  sameAs: Object.values(site.social).filter(Boolean),
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <Font cssVariable="--font-archivo" preload={[{ style: 'normal' }, { style: 'italic' }]} />
+    <Font cssVariable="--font-space-grotesk" />
+    <Font cssVariable="--font-archivo-black" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#f4eee3" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={image} />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="geo.region" content="US-OR" />
+    <meta name="geo.placename" content="Portland" />
+
+    <script type="application/ld+json" set:html={JSON.stringify([business, ...schema])} />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <aside class="rail" aria-hidden="true">
+      <span class="rail-text">Interior Design Studio — {site.city}, Oregon</span>
+      <span class="rail-dot"></span>
+      <span class="rail-text">Residential · Commercial · Virtual</span>
+    </aside>
+    <div class="frame">
+      <Header />
+      <main id="main">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+  </body>
+</html>
+
+<style>
+  .skip {
+    position: absolute;
+    left: 1rem;
+    top: -3rem;
+    z-index: 100;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 0.6rem 1rem;
+  }
+  .skip:focus {
+    top: 1rem;
+  }
+
+  /* Thin vertical rail framing the page on desktop. */
+  .rail {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .rail {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: var(--rail);
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding-block: 7rem 2rem;
+      border-right: 1px solid var(--line);
+      background: var(--bg);
+    }
+    .rail-text {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font: 600 0.65rem/1 var(--font-label);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--slate-mid);
+    }
+    .rail-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .frame {
+      margin-left: var(--rail);
+    }
+  }
+</style>

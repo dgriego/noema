@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://noemainteriordesign.com/sitemap-index.xml

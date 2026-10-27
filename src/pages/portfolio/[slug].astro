@@ -1,0 +1,289 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { site } from '../../config/site';
+
+export async function getStaticPaths() {
+  const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: { project, next: projects[(i + 1) % projects.length] },
+  }));
+}
+
+const { project, next } = Astro.props;
+const { title, description, category, location, cover, coverAlt, gallery } = project.data;
+const { Content } = await render(project);
+
+// Large versions for the lightbox; the gallery thumbnails link to them so it works without JS too.
+const full = await Promise.all(gallery.map((g) => getImage({ src: g.src, inferSize: true, width: 1600, format: 'webp' })));
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: site.url },
+      { '@type': 'ListItem', position: 2, name: 'Portfolio', item: `${site.url}/portfolio` },
+      { '@type': 'ListItem', position: 3, name: title, item: `${site.url}/portfolio/${project.id}` },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: title,
+    description,
+    image: [cover, ...gallery.map((g) => g.src)],
+    creator: { '@id': `${site.url}/#business` },
+    locationCreated: { '@type': 'Place', name: location },
+  },
+];
+---
+
+<Base title={title} description={description} image={cover} schema={schema}>
+  <section class="wrap page-head">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/portfolio">Portfolio</a> / {category}</nav>
+    <h1>{title}</h1>
+    <div class="intro">
+      <div class="prose"><Content /></div>
+      <dl class="facts">
+        <div><dt>Type</dt><dd>{category}</dd></div>
+        <div><dt>Location</dt><dd>{location}</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <Image src={cover} alt={coverAlt} inferSize widths={[800, 1400, 2000]} sizes="(max-width: 1200px) 100vw, 1200px" loading="eager" class="cover" />
+    <ul class="gallery">
+      {
+        gallery.map((img, i) => (
+          <li>
+            <a href={full[i].src} data-lightbox={i}>
+              <Image src={img.src} alt={img.alt} inferSize widths={[400, 700, 900]} sizes="(max-width: 760px) 50vw, 33vw" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="next">
+      <span class="eyebrow">Next project</span>
+      <a href={`/portfolio/${next.id}`}><h2>{next.data.title} →</h2></a>
+    </div>
+  </section>
+
+  <dialog class="lightbox" aria-label="Photo viewer">
+    <img alt="" />
+    <p class="lb-count" aria-live="polite"></p>
+    <button type="button" class="lb-btn lb-close" aria-label="Close">×</button>
+    <button type="button" class="lb-btn lb-prev" aria-label="Previous photo">←</button>
+    <button type="button" class="lb-btn lb-next" aria-label="Next photo">→</button>
+  </dialog>
+</Base>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('.lightbox');
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('a[data-lightbox]')];
+  if (dialog && links.length) {
+    const img = dialog.querySelector('img')!;
+    const count = dialog.querySelector<HTMLElement>('.lb-count')!;
+    let current = 0;
+    const show = (i: number) => {
+      current = (i + links.length) % links.length;
+      const thumb = links[current].querySelector('img');
+      img.src = links[current].href;
+      img.alt = thumb?.alt ?? '';
+      count.textContent = `${current + 1} / ${links.length}`;
+    };
+    links.forEach((a, i) =>
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        show(i);
+        dialog.showModal();
+      }),
+    );
+    dialog.querySelector('.lb-close')!.addEventListener('click', () => dialog.close());
+    dialog.querySelector('.lb-prev')!.addEventListener('click', () => show(current - 1));
+    dialog.querySelector('.lb-next')!.addEventListener('click', () => show(current + 1));
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show(current - 1);
+      if (e.key === 'ArrowRight') show(current + 1);
+    });
+    let startX = 0;
+    dialog.addEventListener('touchstart', (e) => (startX = e.touches[0].clientX), { passive: true });
+    dialog.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
+    });
+  }
+</script>
+
+<style>
+  .crumbs {
+    font-family: var(--font-label);
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 1.25rem;
+  }
+  .crumbs a {
+    color: var(--accent);
+    text-underline-offset: 3px;
+  }
+  .page-head h1 {
+    max-width: 20ch;
+  }
+  .intro {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 3rem;
+    margin-top: 1rem;
+  }
+  .prose {
+    color: var(--ink-soft);
+    font-size: 1.1rem;
+  }
+  .facts {
+    margin: 0;
+    display: grid;
+    gap: 1rem;
+    min-width: 200px;
+    align-content: start;
+    border-left: 1px solid var(--line);
+    padding-left: 2rem;
+  }
+  dt {
+    font-family: var(--font-label);
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  dd {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 1.2rem;
+  }
+  :global(.cover) {
+    width: 100%;
+    max-height: 80vh;
+    object-fit: cover;
+  }
+  .gallery {
+    list-style: none;
+    padding: 0;
+    columns: 3;
+    column-gap: 1rem;
+    margin: 1rem 0 0;
+  }
+  .gallery li {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+  .gallery a {
+    display: block;
+    overflow: hidden;
+    cursor: zoom-in;
+  }
+  .gallery :global(img) {
+    width: 100%;
+    transition: transform 0.5s ease;
+  }
+  .gallery a:hover :global(img) {
+    transform: scale(1.03);
+  }
+
+  .lightbox {
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgba(28, 33, 34, 0.94);
+  }
+  .lightbox[open] {
+    display: grid;
+    place-items: center;
+  }
+  .lightbox::backdrop {
+    background: transparent;
+  }
+  .lightbox img {
+    max-width: min(92vw, 1600px);
+    max-height: 84dvh;
+    object-fit: contain;
+  }
+  .lb-count {
+    position: absolute;
+    left: 50%;
+    bottom: 1.25rem;
+    transform: translateX(-50%);
+    margin: 0;
+    color: #e1e9eb;
+    font: 600 0.75rem/1 var(--font-label);
+    letter-spacing: 0.14em;
+  }
+  .lb-btn {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.25);
+    color: #fff;
+    font-size: 1.3rem;
+    cursor: pointer;
+  }
+  .lb-btn:hover {
+    background: #fff;
+    color: var(--slate);
+  }
+  .lb-close {
+    top: 1rem;
+    right: 1rem;
+  }
+  .lb-prev {
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .lb-next {
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .next {
+    padding-block: 4rem var(--section);
+    border-top: 1px solid var(--line);
+    margin-top: 3rem;
+  }
+  .next a {
+    text-decoration: none;
+  }
+  .next a:hover h2 {
+    color: var(--accent);
+  }
+  @media (max-width: 760px) {
+    .intro {
+      grid-template-columns: 1fr;
+    }
+    .facts {
+      border-left: 0;
+      padding-left: 0;
+      grid-template-columns: 1fr 1fr;
+    }
+    .gallery {
+      columns: 2;
+      column-gap: 0.6rem;
+    }
+    .gallery li {
+      margin-bottom: 0.6rem;
+    }
+  }
+</style>

@@ -1,0 +1,150 @@
+---
+import { Image } from 'astro:assets';
+import { site, nav, bookHref } from '../config/site';
+import { services } from '../data/services';
+import logoFull from '../assets/brand/logo-footer.png';
+
+const year = new Date().getFullYear();
+// No "book a call" banner on the pages that are already the booking step.
+const path = Astro.url.pathname.replace(/(\.html|\/)$/, '');
+const showCta = !['/contact', '/thanks'].includes(path);
+---
+
+<footer class="footer">
+  {
+    showCta && (
+      <div class="wrap top">
+        <p class="big">
+          Let’s design something <em>meaningful.</em>
+        </p>
+        <a href={bookHref} class="btn btn--solid">
+          Book a Discovery Call
+        </a>
+      </div>
+    )
+  }
+
+  <div class="wrap grid">
+    <div class="brand">
+      <Image src={logoFull} alt={site.name} width={220} densities={[1, 2]} />
+      <p class="muted">{site.tagline}</p>
+    </div>
+    <div>
+      <p class="label">Studio</p>
+      <ul>
+        {nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+      </ul>
+    </div>
+    <div>
+      <p class="label">Services</p>
+      <ul>
+        {services.map((s) => <li><a href={`/services#${s.id}`}>{s.title}</a></li>)}
+      </ul>
+    </div>
+    <div>
+      <p class="label">Contact</p>
+      <address>
+        {site.city}, {site.region}<br />
+        <a href={site.phoneHref}>{site.phone}</a>
+        {site.email && <><br /><a href={`mailto:${site.email}`}>{site.email}</a></>}
+      </address>
+      {site.social.instagram && <p><a href={site.social.instagram} rel="me noopener">Instagram</a></p>}
+    </div>
+  </div>
+
+  <div class="wrap legal">
+    <p>© {year} {site.name}</p>
+    <p>Portland, Oregon · Serving the Portland metro & virtual clients everywhere</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--line);
+    padding-block: clamp(4rem, 8vw, 6rem) 2rem;
+    font-size: 0.95rem;
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+    flex-wrap: wrap;
+    padding-bottom: clamp(3rem, 6vw, 4.5rem);
+    margin-bottom: clamp(3rem, 6vw, 4.5rem);
+    border-bottom: 1px solid var(--line);
+  }
+  .big {
+    font-size: clamp(2.2rem, 5.5vw, 4.6rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    color: var(--slate);
+    max-width: 14ch;
+    margin: 0;
+  }
+  .big em {
+    font-weight: 300;
+    color: var(--accent);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1.4fr 1.2fr;
+    gap: 2.5rem;
+  }
+  .brand :global(img) {
+    width: 180px;
+    height: auto;
+    margin-bottom: 1.25rem;
+  }
+  .muted {
+    color: var(--ink-soft);
+    max-width: 30ch;
+  }
+  .label {
+    margin-bottom: 1.1rem;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.55rem;
+  }
+  a:not(.btn) {
+    text-decoration: none;
+    color: var(--ink);
+  }
+  a:not(.btn):hover {
+    color: var(--accent);
+  }
+  address {
+    font-style: normal;
+    line-height: 1.8;
+  }
+  .legal {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font: 500 0.7rem/1.6 var(--font-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--slate-mid);
+  }
+  .legal p {
+    margin: 0;
+  }
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
