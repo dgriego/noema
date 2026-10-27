@@ -46,65 +46,75 @@ All photos live in the repo under `src/assets/photos/<folder>/` (one folder per 
 - **iPhone `.heic` files:** the optimizer can't decode them on Windows; export as JPEG first (Photos app → Export, or set the iPhone to Settings → Camera → Formats → Most Compatible).
 - The original full-resolution photos are kept in the studio's Google Drive folder, not in the repo.
 
-## Deploying to Cloudflare Pages
+## Deploying to Cloudflare Workers
 
-1. Push this repo to GitHub (`dgriego/noema`).
-2. In Cloudflare: **Workers & Pages → Create → Pages → Connect to Git**, then pick the repo.
-   - Framework preset: **Astro**
+The site runs as a Cloudflare Worker with static assets: Cloudflare serves the built pages in `dist/` directly from its edge cache, and the small Worker in `worker/` only runs for `/api/*` (the contact form). Configuration lives in `wrangler.jsonc`.
+
+The repo is already connected (**Workers & Pages → noema**, via Workers Builds). To recreate it from scratch:
+
+1. Workers & Pages → **Create → Import a repository** → pick `dgriego/noema`. The Worker name must be `noema` (it has to match `name` in `wrangler.jsonc`).
+2. **Settings → Build:**
    - Build command: `npm run build`
-   - Build output directory: `dist`
-   - Environment variable `NODE_VERSION` = `22`
-3. Add the contact form variables (see below), then deploy. Every push to `main` deploys to production, and every other branch gets a preview URL.
+   - Deploy command: `npx wrangler deploy`
+   - **Builds for non-production branches: on**, with command `npx wrangler versions upload` (this is what creates preview links)
+   - Build variable `NODE_VERSION` = `22`
+3. Add the contact form variables (see below). Every push to `main` deploys to production.
 4. **Turn off the old Vercel project** (Vercel → noema → Settings → Git → Disconnect, or delete the project). Otherwise Vercel keeps building every push and posting its own checks on GitHub.
-5. **Domain:** Pages project → **Custom domains** → add `noemainteriordesign.com` and `www.noemainteriordesign.com`. The domain has to use Cloudflare DNS: add it under **Websites** (free plan) and switch the nameservers at your registrar, or transfer it to Cloudflare Registrar (at-cost pricing). That moves it off Squarespace.
+5. **Domain:** Worker → **Settings → Domains & Routes → Add → Custom domain**, for `noemainteriordesign.com` and `www.noemainteriordesign.com`. The domain has to use Cloudflare DNS: add it under **Websites** (free plan) and switch the nameservers at your registrar, or transfer it to Cloudflare Registrar (at-cost pricing). That moves it off Squarespace.
+
+Manual deploy from your machine (after `npx wrangler login`): `npm run cf:deploy`.
 
 ### Preview links
 
-Cloudflare builds every branch and pull request and gives each build its own URL. `<project>` is the Pages project name you choose when connecting (Cloudflare shows the final `*.pages.dev` name if `noema` is taken):
+Every push to a branch other than `main` uploads a new version **without** publishing it, and each version gets its own URL. `<subdomain>` is your account's workers.dev subdomain (shown under **Settings → Domains & Routes**):
 
 | What | URL |
 | --- | --- |
-| Production (`main`) | `https://<project>.pages.dev` (and your custom domain) |
-| Latest build of a branch | `https://<branch>.<project>.pages.dev`, e.g. `https://new-photos.noema.pages.dev` |
-| One specific build | `https://<hash>.<project>.pages.dev` |
+| Production (`main`) | `https://noema.<subdomain>.workers.dev` (and your custom domain) |
+| Latest build of a branch | `https://<branch>-noema.<subdomain>.workers.dev`, e.g. `https://new-photos-noema.<subdomain>.workers.dev` |
+| One specific version | `https://<version-id-prefix>-noema.<subdomain>.workers.dev` |
 
 Where to find them:
 
-- **Pull requests:** the Cloudflare Pages bot comments on the PR with the preview URL, and a **Cloudflare Pages** check appears on each commit. Click **Details** to open the build.
-- **Dashboard:** Workers & Pages → the project → **Deployments**. Each row has a **Visit** link.
-- **Command line** (after `npx wrangler login`): `npx wrangler pages deployment list --project-name <project>`.
+- **GitHub:** each commit gets a **Workers Builds: noema** check; on pull requests Cloudflare also comments with the preview URL. Click **Details** to open the build log, which ends with the URL.
+- **Dashboard:** Workers & Pages → noema → **Deployments** (versions and their preview links) and **Builds**.
+- **Command line** (after `npx wrangler login`): `npx wrangler versions list`.
 
 Typical flow: `git switch -c my-change`, push, open a PR, review the preview link, then merge to publish.
 
-Preview URLs are public but unlisted (not indexed by search engines). To restrict them to the studio, use the project's **Settings → General → Access policy** (Cloudflare Access, free for small teams).
+Preview links require `"preview_urls": true` in `wrangler.jsonc` (already set) and are public but unlisted. To restrict them to the studio, enable **Cloudflare Access** for preview URLs under **Settings → Domains & Routes** (free for small teams).
+
+Previews use the same variables and secrets as production, so **a test submission of the contact form on a preview link sends a real email**.
 
 ### Cloudflare-specific files
 
+- `wrangler.jsonc`: Worker name, static asset settings, and which paths run code
+- `worker/index.ts`: the Worker entry point; routes `/api/contact` and hands everything else to the static assets
+- `worker/contact.ts`: the contact form handler
 - `public/_redirects`: 301s for old Squarespace URLs (`/services-1`, `/comingsoon`, etc.)
 - `public/_headers`: long-term caching for hashed assets and basic security headers
-- `functions/api/contact.ts`: the contact form handler (a Pages Function)
 
-Pages serves `about.html` at `/about` (clean URLs) and uses `404.html` automatically.
+The asset router serves `about.html` at `/about` (and redirects `/about.html` and `/about/` there) and uses `404.html` for unknown pages.
 
-Optional: turn on **Web Analytics** for the project in the Cloudflare dashboard (free).
+Optional: turn on **Web Analytics** in the Cloudflare dashboard (free). Worker logs are enabled (`observability` in `wrangler.jsonc`) and show contact form errors under Worker → **Logs**.
 
 ## Contact form
 
-The form posts to `/api/contact`, a Pages Function that validates the fields, drops bots that fill the hidden `_gotcha` honeypot, and emails the inquiry to you through [Resend](https://resend.com). The email's Reply-To is the client's address, so you can just hit Reply.
+The form posts to `/api/contact`, handled by the Worker, which validates the fields, drops bots that fill the hidden `_gotcha` honeypot, and emails the inquiry to you through [Resend](https://resend.com). The email's Reply-To is the client's address, so you can just hit Reply.
 
 Setup (one time):
 
 1. Create a free Resend account and an API key (**API Keys → Create**, "Sending access").
-2. In Cloudflare: Pages project → **Settings → Variables and Secrets**, for Production (and Preview if you want to test there):
+2. In Cloudflare: Worker (noema) → **Settings → Variables and Secrets**:
    - `RESEND_API_KEY`: the key, as type **Secret**
    - `CONTACT_TO`: the inbox that should receive inquiries (comma-separate for more than one)
-3. Redeploy (variables apply to new deployments).
+3. Save. Changes apply right away (`keep_vars` in `wrangler.jsonc` keeps later deploys from wiping them).
 
 Until you verify your domain in Resend, mail is sent from Resend's test address and **can only be delivered to the email you signed up to Resend with**, so use that address for `CONTACT_TO`. For a branded sender and better deliverability, verify `noemainteriordesign.com` in Resend (it gives you DNS records to add in Cloudflare), then set `CONTACT_FROM` to something like `Noema Website <website@noemainteriordesign.com>`.
 
-With JavaScript on, the form submits in the background, shows errors inline, and sends the visitor to `/thanks`. Without JavaScript it posts normally and the function redirects to `/thanks`.
+With JavaScript on, the form submits in the background, shows errors inline, and sends the visitor to `/thanks`. Without JavaScript it posts normally and the Worker redirects to `/thanks`.
 
-**Local testing:** copy `.dev.vars.example` to `.dev.vars`, fill it in, and run `npm run cf:dev` (builds, then serves the site with the function at http://localhost:8788). `npm run dev` still works for page work, but the form needs `cf:dev`.
+**Local testing:** copy `.dev.vars.example` to `.dev.vars`, fill it in, and run `npm run cf:dev` (builds, then serves the site and the Worker at http://localhost:8787). `npm run dev` still works for page work, but the form needs `cf:dev`.
 
 ## Booking link
 

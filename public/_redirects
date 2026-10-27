@@ -1,4 +1,4 @@
-# Old Squarespace URLs (Cloudflare Pages redirect rules)
+# Old Squarespace URLs (Cloudflare Workers static-asset redirect rules)
 /services-1   /services   301
 /comingsoon   /           301
 /blog         /           302

@@ -1,0 +1,24 @@
+// Cloudflare Workers config. Workers Builds runs `npm run build` then `npx wrangler deploy`
+// (for main) or `npx wrangler versions upload` (other branches, giving a preview URL).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Must match the Worker name connected in Cloudflare (Workers & Pages → noema).
+  "name": "noema",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-09-01",
+  "workers_dev": true,
+  "preview_urls": true,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    // /about serves about.html; /about.html and /about/ redirect to /about.
+    "html_handling": "drop-trailing-slash",
+    "not_found_handling": "404-page",
+    // Only the contact API runs code; every page is served straight from the asset cache.
+    "run_worker_first": ["/api/*"]
+  },
+  // Secrets and variables (RESEND_API_KEY, CONTACT_TO, CONTACT_FROM) are set in the
+  // dashboard; keep_vars stops a deploy from wiping them.
+  "keep_vars": true,
+  "observability": { "enabled": true }
+}

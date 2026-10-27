@@ -7,8 +7,9 @@
     "dev": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "cf:dev": "astro build && npx wrangler pages dev dist",
-    "astro": "astro"
+    "cf:dev": "astro build && wrangler dev",
+    "astro": "astro",
+    "cf:deploy": "astro build && wrangler deploy"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "^4.154.0"
   }
 }

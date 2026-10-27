@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { site } from '../config/site';
 
-// The form posts to the Cloudflare Pages Function at functions/api/contact.ts, which emails
+// The form posts to the Cloudflare Worker route in worker/contact.ts, which emails
 // the inquiry. If it fails, visitors see an inline error with the phone number.
 const hasForm = Boolean(site.formEndpoint);
 ---

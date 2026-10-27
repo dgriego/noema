@@ -1,4 +1,4 @@
-// Cloudflare Pages Function: POST /api/contact
+// Contact form handler for POST /api/contact (called from worker/index.ts).
 // Validates the contact form and emails it to CONTACT_TO via Resend (https://resend.com).
 //
 // Environment (Cloudflare → Workers & Pages → noema → Settings → Variables and Secrets):
@@ -8,15 +8,10 @@
 //                   Defaults to Resend's test sender, which can only deliver to the
 //                   email on your Resend account, until you verify your domain in Resend.
 
-interface Env {
+export interface ContactEnv {
   RESEND_API_KEY?: string;
   CONTACT_TO?: string;
   CONTACT_FROM?: string;
-}
-
-interface Context {
-  request: Request;
-  env: Env;
 }
 
 const LIMITS: Record<string, number> = {
@@ -30,7 +25,7 @@ const LIMITS: Record<string, number> = {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export const onRequestPost = async ({ request, env }: Context): Promise<Response> => {
+export async function handleContact(request: Request, env: ContactEnv): Promise<Response> {
   const wantsJson = (request.headers.get('Accept') ?? '').includes('application/json');
 
   let form: FormData;
@@ -102,11 +97,7 @@ export const onRequestPost = async ({ request, env }: Context): Promise<Response
   }
 
   return reply(wantsJson, request, 200);
-};
-
-// Anything other than POST gets a 405 instead of falling through to the 404 page.
-export const onRequest = (): Response =>
-  new Response('Method Not Allowed', { status: 405, headers: { Allow: 'POST' } });
+}
 
 function reply(wantsJson: boolean, request: Request, status: number, error?: string): Response {
   if (wantsJson) {
