@@ -16,8 +16,8 @@ npm run preview   # serve the built site
 ## Brand
 
 - **Logo:** `src/assets/brand/logo.png` (header wordmark) and `logo-footer.png` (boxed lockup). Both are the original Squarespace logos with the white background made transparent. The favicon (`public/favicon.png`) is the original "n" mark.
-- **Fonts** (original brand fonts, self-hosted via Fontsource): Archivo Black for the display marquee, Archivo for headings and body, and Space Grotesk for labels, nav, and buttons.
-- **Colors:** slate `#4f6469` / `#6e878c` / `#c3d8de` (from the logo), red accent `#b23d39` (from the original site), cream `#f4eee3`.
+- **Fonts** (original brand fonts, self-hosted from the Fontsource packages via Astro's Fonts API in `astro.config.mjs`, which preloads them and generates size-matched fallbacks): Archivo Black for the display marquee, Archivo for headings and body, and Space Grotesk for labels, nav, and buttons.
+- **Colors:** slate `#4f6469` / `#53696e` (small label text) / `#c3d8de` (from the logo), red accent `#b23d39` (from the original site), cream `#f4eee3`. Text colors meet WCAG AA contrast; keep it that way when changing them.
 
 ## Editing content
 
@@ -31,9 +31,20 @@ npm run preview   # serve the built site
 
 **Add a portfolio project:** copy an existing file in `src/content/projects/`, rename it (the filename becomes the URL, e.g. `bathroom-remodel.md` → `/portfolio/bathroom-remodel`), and update the front matter. Set `featured: true` to show it on the home page. The build fails with a clear message if a required field is missing.
 
-**Images:** place new photos in `src/assets/` and reference them, or use any `images.squarespace-cdn.com` URL. Either way Astro resizes them and converts them to WebP at build time.
+### Photos
 
-> ⚠️ Current photos are loaded from the Squarespace CDN. Download them into `src/assets/` before cancelling the Squarespace plan, or they'll stop resolving.
+All photos live in the repo under `src/assets/photos/<folder>/` (one folder per project, plus `about/` for Martha's portraits). Astro resizes them and serves WebP at build time; nothing loads from Squarespace.
+
+- **Add a photo to a project:** drop it in that project's folder. Each project's `photos:` front matter lists its folder(s), and every photo in them appears in the gallery, sorted by filename. The `cover:` photo is shown at the top and left out of the grid.
+- **Before committing new photos, run:**
+
+  ```bash
+  node scripts/optimize-photos.mjs
+  ```
+
+  It applies the camera's rotation, caps the long edge at 2400px, re-encodes as JPEG, and **strips all metadata, including GPS location** (phone photos otherwise publish where the client lives). Camera originals shrink from ~10 MB to ~0.3 MB.
+- **iPhone `.heic` files:** the optimizer can't decode them on Windows; export as JPEG first (Photos app → Export, or set the iPhone to Settings → Camera → Formats → Most Compatible).
+- The original full-resolution photos are kept in the studio's Google Drive folder, not in the repo.
 
 ## Deploying to Cloudflare Pages
 
@@ -44,9 +55,30 @@ npm run preview   # serve the built site
    - Build output directory: `dist`
    - Environment variable `NODE_VERSION` = `22`
 3. Add the contact form variables (see below), then deploy. Every push to `main` deploys to production, and every other branch gets a preview URL.
-4. **Domain:** Pages project → **Custom domains** → add `noemainteriordesign.com` and `www.noemainteriordesign.com`. The domain has to use Cloudflare DNS: add it under **Websites** (free plan) and switch the nameservers at your registrar, or transfer it to Cloudflare Registrar (at-cost pricing). That moves it off Squarespace.
+4. **Turn off the old Vercel project** (Vercel → noema → Settings → Git → Disconnect, or delete the project). Otherwise Vercel keeps building every push and posting its own checks on GitHub.
+5. **Domain:** Pages project → **Custom domains** → add `noemainteriordesign.com` and `www.noemainteriordesign.com`. The domain has to use Cloudflare DNS: add it under **Websites** (free plan) and switch the nameservers at your registrar, or transfer it to Cloudflare Registrar (at-cost pricing). That moves it off Squarespace.
 
-Cloudflare-specific files:
+### Preview links
+
+Cloudflare builds every branch and pull request and gives each build its own URL. `<project>` is the Pages project name you choose when connecting (Cloudflare shows the final `*.pages.dev` name if `noema` is taken):
+
+| What | URL |
+| --- | --- |
+| Production (`main`) | `https://<project>.pages.dev` (and your custom domain) |
+| Latest build of a branch | `https://<branch>.<project>.pages.dev`, e.g. `https://new-photos.noema.pages.dev` |
+| One specific build | `https://<hash>.<project>.pages.dev` |
+
+Where to find them:
+
+- **Pull requests:** the Cloudflare Pages bot comments on the PR with the preview URL, and a **Cloudflare Pages** check appears on each commit. Click **Details** to open the build.
+- **Dashboard:** Workers & Pages → the project → **Deployments**. Each row has a **Visit** link.
+- **Command line** (after `npx wrangler login`): `npx wrangler pages deployment list --project-name <project>`.
+
+Typical flow: `git switch -c my-change`, push, open a PR, review the preview link, then merge to publish.
+
+Preview URLs are public but unlisted (not indexed by search engines). To restrict them to the studio, use the project's **Settings → General → Access policy** (Cloudflare Access, free for small teams).
+
+### Cloudflare-specific files
 
 - `public/_redirects`: 301s for old Squarespace URLs (`/services-1`, `/comingsoon`, etc.)
 - `public/_headers`: long-term caching for hashed assets and basic security headers
