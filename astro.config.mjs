@@ -49,9 +49,4 @@ export default defineConfig({
       },
     },
   ],
-  image: {
-    // Portfolio photos currently live on the Squarespace CDN. Astro downloads and
-    // optimizes them at build time; move them into src/assets before cancelling Squarespace.
-    domains: ['images.squarespace-cdn.com'],
-  },
 });

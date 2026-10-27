@@ -8,21 +8,30 @@ import { site, bookHref } from '../config/site';
 
 const featured = (await getCollection('projects', (p) => p.data.featured)).sort((a, b) => a.data.order - b.data.order);
 
-const cdn = 'https://images.squarespace-cdn.com/content/v1/68bdc17cbdcca60b479128dc';
+import alouetteBar from '../assets/photos/alouette/DSCF0161.jpg';
+import alouetteDining from '../assets/photos/alouette/DSCF0193.jpg';
+import kitchen from '../assets/photos/ne-portland-kitchen/ne-portland-kitchen-02.jpg';
+import kitchenDetail from '../assets/photos/ne-portland-kitchen/ne-portland-kitchen-06.jpg';
+import kitchenSink from '../assets/photos/ne-portland-kitchen/ne-portland-kitchen-03.jpg';
+import bedroom from '../assets/photos/bedroom/DGS01649.jpg';
+import nursery from '../assets/photos/nursery/IMG_2023.jpg';
+import santaFe from '../assets/photos/santa-fe-styling/santa-fe-styling-04.jpg';
+import santaFeLiving from '../assets/photos/santa-fe-styling/santa-fe-styling-01.jpg';
+import portrait from '../assets/photos/about/martha-roark.jpg';
+
 const strip = [
-  { src: `${cdn}/1757270066594-Y3X18YYXF3LHSTP7W5SM/RestaurantInteriorDesignPortland_3.JPG`, href: '/portfolio/restaurant-interior-design', alt: 'Portland restaurant bar interior' },
-  { src: `${cdn}/1786985993276-3SRUF1JIA2KODM8Z6XMA/DGS01539.JPG`, href: '/portfolio/kitchen-remodel', alt: 'Portland kitchen remodel' },
-  { src: `${cdn}/1793037566008-233JLCN7ZZHVB3UCCG8C/DGS01649.jpg`, href: '/portfolio/interior-decorating', alt: 'Decorated living space' },
-  { src: `${cdn}/1757289363554-WP9VL32Y159WC8H4WZF3/InteriorStyling_1.JPG`, href: '/portfolio/residential-styling', alt: 'Residential styling' },
-  { src: `${cdn}/1757270061182-IGASFDNMRZ440QV39MC2/RestaurantInteriorDesignPortland_8.JPG`, href: '/portfolio/restaurant-interior-design', alt: 'Restaurant dining room' },
-  { src: `${cdn}/1786985992379-6KLMOKK08MLFNOSWRGC6/DGS01536.JPG`, href: '/portfolio/kitchen-remodel', alt: 'Kitchen detail' },
-  { src: `${cdn}/1793037562116-75NA32VK4U4NZQIF61F9/DGS01645.JPG`, href: '/portfolio/interior-decorating', alt: 'Interior decorating detail' },
-  { src: `${cdn}/1757289409393-SVVQ21RIA8RUTOB62AQ5/InteriorStyling_3.JPG`, href: '/portfolio/residential-styling', alt: 'Styled shelving and decor' },
+  { src: alouetteBar, href: '/portfolio/restaurant-interior-design', alt: 'Portland restaurant bar designed by Noema' },
+  { src: kitchen, href: '/portfolio/kitchen-remodel', alt: 'NE Portland kitchen remodel' },
+  { src: bedroom, href: '/portfolio/interior-decorating', alt: 'Decorated bedroom with art and lamp' },
+  { src: santaFe, href: '/portfolio/residential-styling', alt: 'Santa Fe dining room with gallery wall' },
+  { src: alouetteDining, href: '/portfolio/restaurant-interior-design', alt: 'Restaurant dining room' },
+  { src: nursery, href: '/portfolio/interior-decorating', alt: 'Blue nursery with cloud rug and crib' },
+  { src: kitchenDetail, href: '/portfolio/kitchen-remodel', alt: 'Kitchen with brass faucet and garden window' },
+  { src: santaFeLiving, href: '/portfolio/residential-styling', alt: 'Styled Santa Fe dining area' },
 ];
 
-const collageA = `${cdn}/cd3a23d6-ceda-4fd3-9537-9bf393541e28/DGS01535.jpg`;
-const collageB = `${cdn}/1793039486551-IWZMZYSIQLNK4JSG9LC8/DGS01621.jpg`;
-const portrait = `${cdn}/96208cd1-a664-4fde-a0ff-ba3177808eb6/MarthaRoarkInteriorDesignJPG.JPG`;
+const collageA = nursery;
+const collageB = kitchenSink;
 
 const marquee = ['Residential Design', 'Commercial Design', 'Virtual Design', 'Styling', 'Consultations'];
 const beliefs = ['personal', 'intentional', 'lasting', 'meaningful'];
@@ -52,7 +61,7 @@ const beliefs = ['personal', 'intentional', 'lasting', 'meaningful'];
           strip.map((img, i) => (
             <li>
               <a href={img.href}>
-                <Image src={img.src} alt={img.alt} inferSize widths={[180, 260, 340, 480]} sizes="(max-width: 900px) 170px, 240px" loading={i < 4 ? 'eager' : 'lazy'} />
+                <Image src={img.src} alt={img.alt} widths={[180, 260, 340, 480]} sizes="(max-width: 900px) 170px, 240px" loading={i < 4 ? 'eager' : 'lazy'} />
               </a>
             </li>
           ))
@@ -83,8 +92,8 @@ const beliefs = ['personal', 'intentional', 'lasting', 'meaningful'];
   <section class="section">
     <div class="wrap believe">
       <div class="collage">
-        <Image src={collageA} alt="Kitchen designed by Noema Interior Design" inferSize widths={[500, 900]} sizes="(max-width: 900px) 80vw, 40vw" class="c-a" />
-        <Image src={collageB} alt="Decorated living space by Noema Interior Design" inferSize widths={[300, 600]} sizes="(max-width: 900px) 50vw, 22vw" class="c-b" />
+        <Image src={collageA} alt="Nursery designed by Noema Interior Design" widths={[500, 900]} sizes="(max-width: 900px) 80vw, 40vw" class="c-a" />
+        <Image src={collageB} alt="Wall-mounted sink with brass faucet" widths={[300, 600]} sizes="(max-width: 900px) 50vw, 22vw" class="c-b" />
       </div>
       <div class="believe-text">
         <span class="eyebrow">Our Philosophy</span>
@@ -153,7 +162,7 @@ const beliefs = ['personal', 'intentional', 'lasting', 'meaningful'];
   <section class="section section--slate">
     <div class="wrap about">
       <div class="portrait">
-        <Image src={portrait} alt={`${site.owner}, principal designer and owner of Noema Interior Design`} inferSize widths={[400, 700]} sizes="(max-width: 800px) 100vw, 36vw" />
+        <Image src={portrait} alt={`${site.owner}, principal designer and owner of Noema Interior Design`} widths={[400, 700]} sizes="(max-width: 800px) 100vw, 36vw" />
       </div>
       <div>
         <span class="eyebrow">The Designer</span>

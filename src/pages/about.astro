@@ -1,10 +1,11 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import { site } from '../config/site';
 
-const portrait =
-  'https://images.squarespace-cdn.com/content/v1/68bdc17cbdcca60b479128dc/96208cd1-a664-4fde-a0ff-ba3177808eb6/MarthaRoarkInteriorDesignJPG.JPG';
+import portrait from '../assets/photos/about/martha-roark.jpg';
+
+const portraitShare = await getImage({ src: portrait, width: 1200, format: 'jpg' });
 
 const schema = [
   {
@@ -13,7 +14,7 @@ const schema = [
     name: site.owner,
     jobTitle: 'Principal Designer & Owner',
     worksFor: { '@id': `${site.url}/#business` },
-    image: portrait,
+    image: new URL(portraitShare.src, site.url).href,
     homeLocation: { '@type': 'Place', name: 'Portland, Oregon' },
   },
 ];
@@ -22,7 +23,7 @@ const schema = [
 <Base
   title="About Martha Roark, Portland Interior Designer"
   description="Meet Martha Roark, founder of Noema, a Portland interior designer crafting timeless, personal spaces that reflect memory, meaning, and everyday life."
-  image={portrait}
+  image={portraitShare.src}
   schema={schema}
 >
   <section class="wrap page-head">
@@ -37,7 +38,7 @@ const schema = [
   <section class="section section--alt">
     <div class="wrap bio">
       <div class="portrait">
-        <Image src={portrait} alt={`${site.owner}, principal designer and owner of Noema Interior Design`} inferSize widths={[400, 800]} sizes="(max-width: 800px) 100vw, 40vw" loading="eager" fetchpriority="high" />
+        <Image src={portrait} alt={`${site.owner}, principal designer and owner of Noema Interior Design`} widths={[400, 800]} sizes="(max-width: 800px) 100vw, 40vw" loading="eager" fetchpriority="high" />
       </div>
       <div class="prose">
         <h2>Martha Roark</h2>

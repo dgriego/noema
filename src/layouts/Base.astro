@@ -1,9 +1,10 @@
 ---
-import { Font } from 'astro:assets';
+import { Font, getImage } from 'astro:assets';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { site } from '../config/site';
+import defaultShare from '../assets/photos/alouette/DSCF0161.jpg';
 
 interface Props {
   title?: string;
@@ -14,7 +15,11 @@ interface Props {
   schema?: Record<string, unknown>[];
 }
 
-const { title, description = site.description, image = site.ogImage, noindex = false, schema = [] } = Astro.props;
+const { title, description = site.description, image, noindex = false, schema = [] } = Astro.props;
+
+// Social share image: the page's own image, or a site-wide default, always as an absolute URL.
+const shareSrc = image ?? (await getImage({ src: defaultShare, width: 1200, format: 'jpg' })).src;
+const ogImage = new URL(shareSrc, site.url).href;
 
 const fullTitle = title ? `${title} | ${site.name}` : `${site.name} | Portland, OR Interior Designer`;
 const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', site.url).href;
@@ -29,7 +34,7 @@ const business = {
   url: site.url,
   telephone: site.phone,
   ...(site.email && { email: site.email }),
-  image: site.ogImage,
+  image: ogImage,
   founder: { '@type': 'Person', name: site.owner, jobTitle: 'Principal Designer' },
   address: {
     '@type': 'PostalAddress',
@@ -66,7 +71,7 @@ const business = {
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={image} />
+    <meta property="og:image" content={ogImage} />
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
 

@@ -27,8 +27,6 @@ export const site = {
   // Scheduling link (Calendly, Acuity, etc.). When set, every "Book" button opens it
   // instead of the contact page.
   bookingUrl: '',
-  ogImage:
-    'https://images.squarespace-cdn.com/content/v1/68bdc17cbdcca60b479128dc/cd3a23d6-ceda-4fd3-9537-9bf393541e28/DGS01535.jpg',
 };
 
 export const bookHref = site.bookingUrl || '/contact';
