@@ -2,8 +2,8 @@
 import Base from '../layouts/Base.astro';
 import { site } from '../config/site';
 
-// The form only renders once PUBLIC_FORM_ENDPOINT is set, so a missing setting can never
-// swallow an inquiry; until then visitors are pointed to phone, text, or email.
+// The form posts to the Cloudflare Pages Function at functions/api/contact.ts, which emails
+// the inquiry. If it fails, visitors see an inline error with the phone number.
 const hasForm = Boolean(site.formEndpoint);
 ---
 
@@ -25,8 +25,6 @@ const hasForm = Boolean(site.formEndpoint);
     {
       hasForm ? (
         <form method="POST" action={site.formEndpoint} class="form" data-inquiry novalidate>
-          <input type="hidden" name="_subject" value="New inquiry from noemainteriordesign.com" />
-          <input type="hidden" name="_next" value={`${site.url}/thanks`} />
           <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="visually-hidden" aria-hidden="true" />
 
           <p class="req-note"><span aria-hidden="true">*</span> Required</p>
@@ -111,7 +109,7 @@ const hasForm = Boolean(site.formEndpoint);
 
 <script>
   // Progressive enhancement: send via fetch so errors show inline. Without JS the form
-  // posts normally and the provider redirects to /thanks.
+  // posts normally and /api/contact redirects to /thanks.
   const form = document.querySelector<HTMLFormElement>('form[data-inquiry]');
   if (form) {
     const status = form.querySelector<HTMLElement>('.status')!;

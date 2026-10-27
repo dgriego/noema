@@ -21,7 +21,9 @@ export const site = {
     pinterest: '',
   },
   smsHref: 'sms:+15056297347',
-  formEndpoint: import.meta.env.PUBLIC_FORM_ENDPOINT ?? '',
+  // Contact form handler: a Cloudflare Pages Function (functions/api/contact.ts) that emails
+  // each inquiry to CONTACT_TO. Set it up in Cloudflare; see README → Contact form.
+  formEndpoint: '/api/contact',
   // Scheduling link (Calendly, Acuity, etc.). When set, every "Book" button opens it
   // instead of the contact page.
   bookingUrl: '',

@@ -35,25 +35,44 @@ npm run preview   # serve the built site
 
 > ⚠️ Current photos are loaded from the Squarespace CDN. Download them into `src/assets/` before cancelling the Squarespace plan, or they'll stop resolving.
 
-## Deploying to Vercel
+## Deploying to Cloudflare Pages
 
-1. Push this repo to GitHub.
-2. In Vercel: **Add New → Project → Import** this repo. It auto-detects Astro; no settings changes are needed.
-3. Add an environment variable `PUBLIC_FORM_ENDPOINT` (see Contact form below).
-4. Deploy. Every push to `main` deploys to production, and every PR gets a preview URL.
-5. **Domain:** Project → Settings → Domains → add `noemainteriordesign.com` and `www.noemainteriordesign.com`, then update DNS at your registrar as Vercel instructs (moving the domain off Squarespace).
+1. Push this repo to GitHub (`dgriego/noema`).
+2. In Cloudflare: **Workers & Pages → Create → Pages → Connect to Git**, then pick the repo.
+   - Framework preset: **Astro**
+   - Build command: `npm run build`
+   - Build output directory: `dist`
+   - Environment variable `NODE_VERSION` = `22`
+3. Add the contact form variables (see below), then deploy. Every push to `main` deploys to production, and every other branch gets a preview URL.
+4. **Domain:** Pages project → **Custom domains** → add `noemainteriordesign.com` and `www.noemainteriordesign.com`. The domain has to use Cloudflare DNS: add it under **Websites** (free plan) and switch the nameservers at your registrar, or transfer it to Cloudflare Registrar (at-cost pricing). That moves it off Squarespace.
 
-`vercel.json` holds 301 redirects for old Squarespace URLs (`/services-1`, `/comingsoon`, etc.), long-term caching for hashed assets, and basic security headers.
+Cloudflare-specific files:
 
-Optional: enable **Vercel Web Analytics** and **Speed Insights** in the project dashboard (free tier available).
+- `public/_redirects`: 301s for old Squarespace URLs (`/services-1`, `/comingsoon`, etc.)
+- `public/_headers`: long-term caching for hashed assets and basic security headers
+- `functions/api/contact.ts`: the contact form handler (a Pages Function)
+
+Pages serves `about.html` at `/about` (clean URLs) and uses `404.html` automatically.
+
+Optional: turn on **Web Analytics** for the project in the Cloudflare dashboard (free).
 
 ## Contact form
 
-The form posts to whatever URL is in `PUBLIC_FORM_ENDPOINT`. [Formspree](https://formspree.io) works out of the box (free tier: 50 submissions/month). Create a form, then paste its endpoint, e.g. `https://formspree.io/f/abcdwxyz`. It honors the `_next` (redirect to `/thanks`), `_subject`, and `_gotcha` (spam honeypot) fields already in the form.
+The form posts to `/api/contact`, a Pages Function that validates the fields, drops bots that fill the hidden `_gotcha` honeypot, and emails the inquiry to you through [Resend](https://resend.com). The email's Reply-To is the client's address, so you can just hit Reply.
 
-With JavaScript on, the form submits in the background, shows errors inline, and sends the visitor to `/thanks`. Without JavaScript it posts normally, and the provider redirects to `/thanks`.
+Setup (one time):
 
-**Until `PUBLIC_FORM_ENDPOINT` is set, the form is hidden** and the Contact page shows call, text, and email buttons instead, so no inquiry can be lost to a misconfiguration.
+1. Create a free Resend account and an API key (**API Keys → Create**, "Sending access").
+2. In Cloudflare: Pages project → **Settings → Variables and Secrets**, for Production (and Preview if you want to test there):
+   - `RESEND_API_KEY`: the key, as type **Secret**
+   - `CONTACT_TO`: the inbox that should receive inquiries (comma-separate for more than one)
+3. Redeploy (variables apply to new deployments).
+
+Until you verify your domain in Resend, mail is sent from Resend's test address and **can only be delivered to the email you signed up to Resend with**, so use that address for `CONTACT_TO`. For a branded sender and better deliverability, verify `noemainteriordesign.com` in Resend (it gives you DNS records to add in Cloudflare), then set `CONTACT_FROM` to something like `Noema Website <website@noemainteriordesign.com>`.
+
+With JavaScript on, the form submits in the background, shows errors inline, and sends the visitor to `/thanks`. Without JavaScript it posts normally and the function redirects to `/thanks`.
+
+**Local testing:** copy `.dev.vars.example` to `.dev.vars`, fill it in, and run `npm run cf:dev` (builds, then serves the site with the function at http://localhost:8788). `npm run dev` still works for page work, but the form needs `cf:dev`.
 
 ## Booking link
 
