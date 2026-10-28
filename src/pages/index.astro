@@ -9,10 +9,10 @@ import { site, bookHref } from '../config/site';
 const featured = (await getCollection('projects', (p) => p.data.featured)).sort((a, b) => a.data.order - b.data.order);
 
 import alouetteBar from '../assets/photos/alouette/DSCF0161.jpg';
-import alouetteDining from '../assets/photos/alouette/DSCF0193.jpg';
+import alouetteStorefront from '../assets/photos/alouette/DSCF0193.jpg';
+import alouetteRoom from '../assets/photos/alouette/DSCF0164.jpg';
 import kitchen from '../assets/photos/ne-portland-kitchen/ne-portland-kitchen-02.jpg';
 import kitchenDetail from '../assets/photos/ne-portland-kitchen/ne-portland-kitchen-06.jpg';
-import kitchenCounter from '../assets/photos/ne-portland-kitchen/ne-portland-kitchen-04.jpg';
 import bedroom from '../assets/photos/bedroom/DGS01649.jpg';
 import nursery from '../assets/photos/nursery/IMG_2023.jpg';
 import santaFe from '../assets/photos/santa-fe-styling/santa-fe-styling-04.jpg';
@@ -20,18 +20,18 @@ import santaFeLiving from '../assets/photos/santa-fe-styling/santa-fe-styling-01
 import portrait from '../assets/photos/about/martha-roark.jpg';
 
 const strip = [
-  { src: alouetteBar, href: '/portfolio/restaurant-interior-design', alt: 'Portland restaurant bar designed by Noema' },
+  { src: alouetteBar, href: '/portfolio/restaurant-interior-design', alt: 'Portland restaurant dining room with green banquettes, designed by Noema' },
   { src: kitchen, href: '/portfolio/kitchen-remodel', alt: 'NE Portland kitchen remodel' },
   { src: bedroom, href: '/portfolio/interior-decorating', alt: 'Decorated bedroom with art and lamp' },
   { src: santaFe, href: '/portfolio/residential-styling', alt: 'Santa Fe dining room with gallery wall' },
-  { src: alouetteDining, href: '/portfolio/restaurant-interior-design', alt: 'Restaurant dining room' },
+  { src: alouetteStorefront, href: '/portfolio/restaurant-interior-design', alt: 'Restaurant storefront with patio planters' },
   { src: nursery, href: '/portfolio/interior-decorating', alt: 'Blue nursery with cloud rug and crib' },
   { src: kitchenDetail, href: '/portfolio/kitchen-remodel', alt: 'Kitchen with brass faucet and garden window' },
   { src: santaFeLiving, href: '/portfolio/residential-styling', alt: 'Styled Santa Fe dining area' },
 ];
 
 const collageA = nursery;
-const collageB = kitchenCounter;
+const collageB = alouetteRoom;
 
 const marquee = ['Residential Design', 'Commercial Design', 'Virtual Design', 'Styling', 'Consultations'];
 const beliefs = ['personal', 'intentional', 'lasting', 'meaningful'];
@@ -93,7 +93,7 @@ const beliefs = ['personal', 'intentional', 'lasting', 'meaningful'];
     <div class="wrap believe">
       <div class="collage">
         <Image src={collageA} alt="Nursery designed by Noema Interior Design" widths={[500, 900]} sizes="(max-width: 900px) 80vw, 40vw" class="c-a" />
-        <Image src={collageB} alt="Kitchen counter with a bowl of lemons and tile backsplash" widths={[300, 600]} sizes="(max-width: 900px) 50vw, 22vw" class="c-b" />
+        <Image src={collageB} alt="Full restaurant dining room designed by Noema, looking toward the front windows" widths={[300, 600]} sizes="(max-width: 900px) 50vw, 22vw" class="c-b" />
       </div>
       <div class="believe-text">
         <span class="eyebrow">Our Philosophy</span>

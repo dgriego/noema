@@ -3,7 +3,7 @@ title: Portland Restaurant Interior Design
 description: Full-service commercial interior design for a semi-formal Portland restaurant with a street-facing bar, a mirror, and a backdrop to showcase the owner’s art collection.
 category: Commercial
 cover: ../../assets/photos/alouette/DSCF0161.jpg
-coverAlt: Restaurant bar and dining room in Portland designed by Noema Interior Design
+coverAlt: Portland restaurant dining room with green banquettes and wall sconces, designed by Noema Interior Design
 order: 3
 featured: true
 photoAlt: Portland restaurant interior designed by Noema Interior Design
