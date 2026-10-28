@@ -43,7 +43,7 @@ All photos live in the repo under `src/assets/photos/<folder>/` (one folder per 
   node scripts/optimize-photos.mjs
   ```
 
-  It applies the camera's rotation, caps the long edge at 2400px, re-encodes as JPEG, and **strips all metadata, including GPS location** (phone photos otherwise publish where the client lives). Camera originals shrink from ~10 MB to ~0.3 MB.
+  It applies the camera's rotation, caps the long edge at 3200px, re-encodes as JPEG, and **strips all metadata, including GPS location** (phone photos otherwise publish where the client lives). Camera originals shrink from ~10 MB to under 1 MB.
 - **iPhone `.heic` files:** the optimizer can't decode them on Windows; export as JPEG first (Photos app → Export, or set the iPhone to Settings → Camera → Formats → Most Compatible).
 - The original full-resolution photos are kept in the studio's Google Drive folder, not in the repo.
 
@@ -110,7 +110,7 @@ Setup (one time):
    - `RESEND_API_KEY`: the key, as type **Secret**
 3. Save. Changes apply right away (`keep_vars` in `wrangler.jsonc` keeps later deploys from wiping them).
 
-Inquiries go to `CONTACT_TO`, set under `vars` in `wrangler.jsonc` (comma-separate for more than one). It's martha@noemainteriors.com, which Cloudflare Email Routing forwards to Martha's inbox. Edit it there and push to change it; a value set in the dashboard is replaced on the next deploy.
+Inquiries go to `CONTACT_TO` and are sent from `CONTACT_FROM`, both set under `vars` in `wrangler.jsonc` (comma-separate `CONTACT_TO` for more than one). `CONTACT_TO` is martha@noemainteriors.com, a Google Workspace mailbox. Edit it there and push to change it; a value set in the dashboard is replaced on the next deploy.
 
 Until you verify your domain in Resend, mail is sent from Resend's test address and **can only be delivered to the email you signed up to Resend with**, so `CONTACT_TO` must be that address. For a branded sender and better deliverability, verify `noemainteriors.com` in Resend (it gives you DNS records to add in Cloudflare), then set `CONTACT_FROM` to something like `Noema Website <website@noemainteriors.com>`.
 

@@ -1,5 +1,6 @@
 ---
 import { Image, getImage } from 'astro:assets';
+import { coverImage } from '../utils/image';
 import Base from '../layouts/Base.astro';
 import { site } from '../config/site';
 
@@ -38,7 +39,7 @@ const schema = [
   <section class="section section--alt">
     <div class="wrap bio">
       <div class="portrait">
-        <Image src={portrait} alt={`${site.owner}, principal designer and owner of Noema Interior Design`} widths={[400, 800]} sizes="(max-width: 800px) 100vw, 40vw" loading="eager" fetchpriority="high" />
+        <Image src={portrait} alt={`${site.owner}, principal designer and owner of Noema Interior Design`} {...coverImage(portrait, 4 / 5, '(max-width: 800px) 100vw, 40vw')} loading="eager" fetchpriority="high" />
       </div>
       <div class="prose">
         <h2>Martha Roark</h2>

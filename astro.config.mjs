@@ -16,6 +16,17 @@ export default defineConfig({
     // Page CSS is tiny; inlining it removes render-blocking requests.
     inlineStylesheets: 'always',
   },
+  // Portfolio photos are the product, so encode above sharp's default quality (80), which
+  // softens fine texture and smears color edges.
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/sharp',
+      config: {
+        webp: { quality: 90, smartSubsample: true },
+        jpeg: { quality: 90, mozjpeg: true },
+      },
+    },
+  },
   integrations: [sitemap({ filter: (page) => !page.includes('/thanks') })],
   fonts: [
     {

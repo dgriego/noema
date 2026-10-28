@@ -1,5 +1,6 @@
 ---
 import { Image, getImage } from 'astro:assets';
+import { fullImage } from '../../utils/image';
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import { site } from '../../config/site';
@@ -29,7 +30,7 @@ const gallery = photos.flatMap((folder) =>
 );
 
 // Large versions for the lightbox; the gallery thumbnails link to them so it works without JS too.
-const full = await Promise.all(gallery.map((img) => getImage({ src: img, width: Math.min(1600, img.width), format: 'webp' })));
+const full = await Promise.all(gallery.map((img) => getImage({ src: img, width: Math.min(3200, img.width), format: 'webp' })));
 const ogImage = await getImage({ src: cover, width: 1200, format: 'jpg' });
 const abs = (src: string) => new URL(src, site.url).href;
 
@@ -69,13 +70,13 @@ const schema = [
   </section>
 
   <section class="wrap">
-    <Image src={cover} alt={coverAlt} widths={[800, 1400, 2000]} sizes="(max-width: 1200px) 100vw, 1200px" loading="eager" class="cover" />
+    <Image src={cover} alt={coverAlt} {...fullImage('(max-width: 1200px) 100vw, 1200px')} loading="eager" class="cover" />
     <ul class="gallery">
       {
         gallery.map((img, i) => (
           <li>
             <a href={full[i].src} data-lightbox={i}>
-              <Image src={img} alt={`${photoAlt} (${i + 1} of ${gallery.length})`} widths={[400, 700, 900]} sizes="(max-width: 760px) 50vw, 33vw" />
+              <Image src={img} alt={`${photoAlt} (${i + 1} of ${gallery.length})`} {...fullImage('(max-width: 760px) 50vw, 33vw')} />
             </a>
           </li>
         ))

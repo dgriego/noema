@@ -18,7 +18,7 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
 
   <section class="wrap grid" aria-labelledby="projects-h">
     <h2 id="projects-h" class="visually-hidden">Projects</h2>
-    {projects.map((p, i) => <ProjectCard project={p} index={i} eager={i === 0} />)}
+    {projects.map((p, i) => <ProjectCard project={p} index={i} eager={i === 0} sizes="(max-width: 680px) 100vw, 50vw" />)}
   </section>
 
 </Base>

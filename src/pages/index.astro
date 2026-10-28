@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import { coverImage } from '../utils/image';
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import ProjectCard from '../components/ProjectCard.astro';
@@ -61,7 +62,7 @@ const beliefs = ['personal', 'intentional', 'lasting', 'meaningful'];
           strip.map((img, i) => (
             <li>
               <a href={img.href}>
-                <Image src={img.src} alt={img.alt} widths={[180, 260, 340, 480]} sizes="(max-width: 900px) 170px, 240px" loading={i < 4 ? 'eager' : 'lazy'} />
+                <Image src={img.src} alt={img.alt} {...coverImage(img.src, 4 / 5, '(max-width: 900px) 170px, 240px')} loading={i < 4 ? 'eager' : 'lazy'} />
               </a>
             </li>
           ))
@@ -92,8 +93,8 @@ const beliefs = ['personal', 'intentional', 'lasting', 'meaningful'];
   <section class="section">
     <div class="wrap believe">
       <div class="collage">
-        <Image src={collageA} alt="Nursery designed by Noema Interior Design" widths={[500, 900]} sizes="(max-width: 900px) 80vw, 40vw" class="c-a" />
-        <Image src={collageB} alt="Full restaurant dining room designed by Noema, looking toward the front windows" widths={[300, 600]} sizes="(max-width: 900px) 50vw, 22vw" class="c-b" />
+        <Image src={collageA} alt="Nursery designed by Noema Interior Design" {...coverImage(collageA, 4 / 5, '(max-width: 900px) 80vw, 40vw')} class="c-a" />
+        <Image src={collageB} alt="Full restaurant dining room designed by Noema, looking toward the front windows" {...coverImage(collageB, 3 / 4, '(max-width: 900px) 50vw, 22vw')} class="c-b" />
       </div>
       <div class="believe-text">
         <span class="eyebrow">Our Philosophy</span>
@@ -162,7 +163,7 @@ const beliefs = ['personal', 'intentional', 'lasting', 'meaningful'];
   <section class="section section--slate">
     <div class="wrap about">
       <div class="portrait">
-        <Image src={portrait} alt={`${site.owner}, principal designer and owner of Noema Interior Design`} widths={[400, 700]} sizes="(max-width: 800px) 100vw, 36vw" />
+        <Image src={portrait} alt={`${site.owner}, principal designer and owner of Noema Interior Design`} {...coverImage(portrait, 4 / 5, '(max-width: 800px) 100vw, 36vw')} />
       </div>
       <div>
         <span class="eyebrow">The Designer</span>

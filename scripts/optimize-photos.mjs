@@ -1,4 +1,4 @@
-// Prepares source photos for the repo: applies EXIF rotation, caps the long edge at 2400px,
+// Prepares source photos for the repo: applies EXIF rotation, caps the long edge at 3200px,
 // re-encodes as JPEG, and strips all metadata (including GPS location from phone photos).
 // Usage: node scripts/optimize-photos.mjs [dir]   (default: src/assets/photos)
 // Safe to re-run; already-optimized files are left alone.
@@ -8,7 +8,7 @@ import path from 'node:path';
 
 sharp.cache(false); // don't hold source files open (Windows locks them)
 
-const MAX = 2400;
+const MAX = 3200; // enough for full-screen viewing on high-density screens
 const root = process.argv[2] ?? 'src/assets/photos';
 const exts = new Set(['.jpg', '.jpeg', '.png', '.heic', '.heif', '.webp', '.tif', '.tiff']);
 
@@ -33,7 +33,7 @@ for (const file of files) {
       .rotate() // bake in EXIF orientation before metadata is dropped
       .resize({ width: MAX, height: MAX, fit: 'inside', withoutEnlargement: true })
       .toColourspace('srgb')
-      .jpeg({ quality: 85, mozjpeg: true })
+      .jpeg({ quality: 92, mozjpeg: true }) // high: Astro re-encodes again at build time
       .toBuffer(); // no withMetadata(): EXIF/GPS/ICC are discarded
   } catch (err) {
     // e.g. iPhone HEIC: sharp's prebuilt binaries can't decode HEVC. Export it as JPEG instead.
