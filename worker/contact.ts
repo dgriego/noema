@@ -4,7 +4,7 @@
 // Environment (Cloudflare → Workers & Pages → noema → Settings → Variables and Secrets):
 //   RESEND_API_KEY  (secret)  API key from resend.com
 //   CONTACT_TO      (text)    inbox that receives inquiries
-//   CONTACT_FROM    (text, optional) sender, e.g. "Noema Website <website@noemainteriordesign.com>".
+//   CONTACT_FROM    (text, optional) sender, e.g. "Noema Website <website@noemainteriors.com>".
 //                   Defaults to Resend's test sender, which can only deliver to the
 //                   email on your Resend account, until you verify your domain in Resend.
 
@@ -67,7 +67,7 @@ export async function handleContact(request: Request, env: ContactEnv): Promise<
     '',
     data.message,
     '',
-    '-- Sent from the contact form on noemainteriordesign.com. Reply to this email to answer the client directly.',
+    '-- Sent from the contact form on noemainteriors.com. Reply to this email to answer the client directly.',
   ].join('\n');
 
   let res: Response;

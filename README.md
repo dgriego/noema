@@ -1,6 +1,6 @@
 # Noema Interior Design
 
-Marketing site for [Noema Interior Design](https://noemainteriordesign.com), a Portland, OR interior design studio.
+Marketing site for [Noema Interior Design](https://noemainteriors.com), a Portland, OR interior design studio.
 
 Built with [Astro](https://astro.build): pages are pre-rendered to static HTML with zero client JavaScript (apart from the mobile menu toggle), which keeps it fast, cheap to host, and easy for search engines to read.
 
@@ -59,7 +59,8 @@ The repo is already connected (**Workers & Pages → noema**, via Workers Builds
    - **Builds for non-production branches: on**, with command `npx wrangler versions upload` (this is what creates preview links)
    - Build variable `NODE_VERSION` = `22`
 3. Add the contact form variables (see below). Every push to `main` deploys to production.
-4. **Domain:** Worker → **Settings → Domains & Routes → Add → Custom domain**, for `noemainteriordesign.com` and `www.noemainteriordesign.com`. The domain has to use Cloudflare DNS: add it under **Websites** (free plan) and switch the nameservers at your registrar, or transfer it to Cloudflare Registrar (at-cost pricing). That moves it off Squarespace.
+4. **Domain:** the site lives at **noemainteriors.com** (Worker → **Settings → Domains & Routes → Custom domain**). Add `www.noemainteriors.com` there too, so www works. The `noema.<subdomain>.workers.dev` address is turned off (`"workers_dev": false` in `wrangler.jsonc`); preview links still work.
+5. **Old domain:** when `noemainteriordesign.com` leaves Squarespace, point it at Cloudflare and add a 301 redirect to `https://noemainteriors.com` (Rules → Redirect Rules, keeping the path), so existing Google rankings and links carry over.
 
 Manual deploy from your machine (after `npx wrangler login`): `npm run cf:deploy`.
 
@@ -109,7 +110,7 @@ Setup (one time):
    - `CONTACT_TO`: the inbox that should receive inquiries (comma-separate for more than one)
 3. Save. Changes apply right away (`keep_vars` in `wrangler.jsonc` keeps later deploys from wiping them).
 
-Until you verify your domain in Resend, mail is sent from Resend's test address and **can only be delivered to the email you signed up to Resend with**, so use that address for `CONTACT_TO`. For a branded sender and better deliverability, verify `noemainteriordesign.com` in Resend (it gives you DNS records to add in Cloudflare), then set `CONTACT_FROM` to something like `Noema Website <website@noemainteriordesign.com>`.
+Until you verify your domain in Resend, mail is sent from Resend's test address and **can only be delivered to the email you signed up to Resend with**, so use that address for `CONTACT_TO`. For a branded sender and better deliverability, verify `noemainteriors.com` in Resend (it gives you DNS records to add in Cloudflare), then set `CONTACT_FROM` to something like `Noema Website <website@noemainteriors.com>`.
 
 With JavaScript on, the form submits in the background, shows errors inline, and sends the visitor to `/thanks`. Without JavaScript it posts normally and the Worker redirects to `/thanks`.
 
@@ -131,7 +132,7 @@ Built in:
 
 After launch:
 
-1. **Google Search Console:** verify the domain and submit `https://noemainteriordesign.com/sitemap-index.xml`.
+1. **Google Search Console:** verify the domain and submit `https://noemainteriors.com/sitemap-index.xml`.
 2. **Google Business Profile:** this has the biggest impact on local search. Category "Interior designer", service area = Portland metro, link to the site, add photos, and ask clients for reviews.
 3. Fill in `email` and `social.instagram` in `src/config/site.ts`.
 4. Use the same name and phone number everywhere online (Houzz, Yelp, Instagram bio).

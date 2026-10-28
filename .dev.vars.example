@@ -3,4 +3,4 @@
 RESEND_API_KEY=re_xxxxxxxxxxxx
 CONTACT_TO=you@example.com
 # Optional once your domain is verified in Resend:
-# CONTACT_FROM=Noema Website <website@noemainteriordesign.com>
+# CONTACT_FROM=Noema Website <website@noemainteriors.com>

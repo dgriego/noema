@@ -3,14 +3,14 @@
 export const site = {
   name: 'Noema Interior Design',
   shortName: 'Noema',
-  url: 'https://noemainteriordesign.com',
+  url: 'https://noemainteriors.com',
   tagline: 'Interior design rooted in meaning, memory, and perception.',
   description:
     'Noema is a Portland, Oregon interior design studio offering residential, commercial, and virtual interior design, styling, and consultations.',
   owner: 'Martha Roark',
   phone: '(505) 629-7347',
   phoneHref: 'tel:+15056297347',
-  email: '', // e.g. 'hello@noemainteriordesign.com'; shown site-wide once set
+  email: '', // e.g. 'hello@noemainteriors.com'; shown site-wide once set
   city: 'Portland',
   region: 'OR',
   country: 'US',

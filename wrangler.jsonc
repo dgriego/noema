@@ -6,7 +6,9 @@
   "name": "noema",
   "main": "worker/index.ts",
   "compatibility_date": "2026-09-01",
-  "workers_dev": true,
+  // The site is served on noemainteriors.com, so the noema.<subdomain>.workers.dev copy is off.
+  // Preview links still work because preview_urls is enabled separately.
+  "workers_dev": false,
   "preview_urls": true,
   "assets": {
     "directory": "./dist",

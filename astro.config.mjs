@@ -9,7 +9,7 @@ const local = fontProviders.local();
 const file = (pkg, name) => `./node_modules/${pkg}/files/${name}`;
 
 export default defineConfig({
-  site: 'https://noemainteriordesign.com',
+  site: 'https://noemainteriors.com',
   trailingSlash: 'never',
   build: {
     format: 'file',

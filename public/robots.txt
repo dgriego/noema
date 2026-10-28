@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://noemainteriordesign.com/sitemap-index.xml
+Sitemap: https://noemainteriors.com/sitemap-index.xml

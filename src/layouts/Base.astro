@@ -22,7 +22,9 @@ const shareSrc = image ?? (await getImage({ src: defaultShare, width: 1200, form
 const ogImage = new URL(shareSrc, site.url).href;
 
 const fullTitle = title ? `${title} | ${site.name}` : `${site.name} | Portland, OR Interior Designer`;
-const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', site.url).href;
+// Pages build as about.html etc. but are served at /about, so drop .html, /index, and trailing slashes.
+const cleanPath = Astro.url.pathname.replace(/(\/index)?\.html$/, '').replace(/\/$/, '') || '/';
+const canonical = new URL(cleanPath, site.url).href;
 
 // LocalBusiness data on every page helps Google show Noema in local / map results.
 const business = {
