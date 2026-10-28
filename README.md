@@ -59,8 +59,7 @@ The repo is already connected (**Workers & Pages → noema**, via Workers Builds
    - **Builds for non-production branches: on**, with command `npx wrangler versions upload` (this is what creates preview links)
    - Build variable `NODE_VERSION` = `22`
 3. Add the contact form variables (see below). Every push to `main` deploys to production.
-4. **Turn off the old Vercel project** (Vercel → noema → Settings → Git → Disconnect, or delete the project). Otherwise Vercel keeps building every push and posting its own checks on GitHub.
-5. **Domain:** Worker → **Settings → Domains & Routes → Add → Custom domain**, for `noemainteriordesign.com` and `www.noemainteriordesign.com`. The domain has to use Cloudflare DNS: add it under **Websites** (free plan) and switch the nameservers at your registrar, or transfer it to Cloudflare Registrar (at-cost pricing). That moves it off Squarespace.
+4. **Domain:** Worker → **Settings → Domains & Routes → Add → Custom domain**, for `noemainteriordesign.com` and `www.noemainteriordesign.com`. The domain has to use Cloudflare DNS: add it under **Websites** (free plan) and switch the nameservers at your registrar, or transfer it to Cloudflare Registrar (at-cost pricing). That moves it off Squarespace.
 
 Manual deploy from your machine (after `npx wrangler login`): `npm run cf:deploy`.
 
