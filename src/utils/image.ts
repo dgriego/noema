@@ -1,7 +1,7 @@
 import type { ImageMetadata } from 'astro';
 
 // Output widths offered to the browser; Astro skips any wider than the source photo.
-const LADDER = [400, 700, 1000, 1400, 1800, 2400, 3200];
+const LADDER = [400, 600, 800, 1000, 1200, 1600, 2000, 2400, 3200];
 
 /**
  * Responsive props for a photo cropped into a fixed-ratio box with `object-fit: cover`.

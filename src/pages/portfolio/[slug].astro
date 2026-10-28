@@ -70,7 +70,7 @@ const schema = [
   </section>
 
   <section class="wrap">
-    <Image src={cover} alt={coverAlt} {...fullImage('(max-width: 1200px) 100vw, 1200px')} loading="eager" class="cover" />
+    <Image src={cover} alt={coverAlt} {...fullImage('(max-width: 1200px) 100vw, 1200px')} loading="eager" fetchpriority="high" class="cover" />
     <ul class="gallery">
       {
         gallery.map((img, i) => (

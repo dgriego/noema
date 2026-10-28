@@ -39,7 +39,7 @@ const beliefs = ['personal', 'intentional', 'lasting', 'meaningful'];
 ---
 
 <Base
-  description="Noema is a Portland, Oregon interior design studio creating personal, intentional spaces. Residential, commercial, and virtual interior design, styling, and consultations."
+  description="Noema is a Portland, Oregon interior design studio creating personal, intentional spaces: residential, commercial, and virtual design, styling, and consultations."
 >
   <section class="hero">
     <div class="wrap hero-meta">
@@ -62,7 +62,7 @@ const beliefs = ['personal', 'intentional', 'lasting', 'meaningful'];
           strip.map((img, i) => (
             <li>
               <a href={img.href}>
-                <Image src={img.src} alt={img.alt} {...coverImage(img.src, 4 / 5, '(max-width: 900px) 170px, 240px')} loading={i < 4 ? 'eager' : 'lazy'} />
+                <Image src={img.src} alt={img.alt} {...coverImage(img.src, 4 / 5, '(max-width: 900px) 170px, 240px')} loading={i < 2 ? 'eager' : 'lazy'} fetchpriority={i < 2 ? undefined : 'low'} />
               </a>
             </li>
           ))

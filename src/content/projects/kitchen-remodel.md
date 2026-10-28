@@ -1,6 +1,6 @@
 ---
 title: NE Portland Kitchen Remodel
-description: A kitchen remodel in Portland, Oregon designed for daily use, with considered finishes, storage, and lighting that make the most-used room in the house worth the investment.
+description: A NE Portland kitchen remodel designed for daily use, with white shaker cabinets, brass hardware, smart storage, and layered lighting by Noema Interior Design.
 category: Residential
 cover: ../../assets/photos/ne-portland-kitchen/kitchen-interior-design-portland-01.jpg
 coverAlt: NE Portland kitchen remodel with white shaker cabinets, brass hardware, and a tile backsplash by Noema Interior Design

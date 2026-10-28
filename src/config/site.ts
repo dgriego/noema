@@ -10,7 +10,7 @@ export const site = {
   owner: 'Martha Roark',
   phone: '(505) 629-7347',
   phoneHref: 'tel:+15056297347',
-  email: '', // e.g. 'hello@noemainteriors.com'; shown site-wide once set
+  email: 'martha@noemainteriors.com', // shown site-wide and in the structured data
   city: 'Portland',
   region: 'OR',
   country: 'US',

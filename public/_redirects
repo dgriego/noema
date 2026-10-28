@@ -3,3 +3,14 @@
 /comingsoon   /           301
 /blog         /           302
 /cart         /           301
+
+# Permanent (301) versions of the trailing-slash and .html redirects. Cloudflare's own
+# html_handling sends a temporary 307, which search engines treat as less final.
+/index.html  /  301
+/:page/  /:page  301
+/portfolio/:slug/  /portfolio/:slug  301
+/about.html  /about  301
+/contact.html  /contact  301
+/services.html  /services  301
+/portfolio.html  /portfolio  301
+/portfolio/:slug.html  /portfolio/:slug  301

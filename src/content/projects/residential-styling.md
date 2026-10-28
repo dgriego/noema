@@ -1,6 +1,6 @@
 ---
 title: Santa Fe Residential Styling
-description: A residential styling project in Santa Fe, New Mexico that worked with the client’s existing pieces, filled the gaps, and edited the rest for a home that feels complete.
+description: "Residential styling in Santa Fe, NM: working with the client’s existing pieces, filling the gaps, and editing the rest for a home that feels complete."
 category: Styling
 cover: ../../assets/photos/santa-fe-styling/santa-fe-styling-04.jpg
 coverAlt: Styled Santa Fe dining room with gallery wall by Noema Interior Design
