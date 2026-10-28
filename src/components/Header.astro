@@ -108,6 +108,7 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
   .nav-cta {
     padding: 0.85em 1.3em;
     font-size: 0.68rem;
+    white-space: nowrap;
   }
   .toggle {
     display: none;
@@ -144,7 +145,8 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
     top: 7px;
   }
 
-  @media (max-width: 1180px) {
+  /* The centered tagline needs room beside the nav; hide it before they collide. */
+  @media (max-width: 1360px) {
     .tagline {
       display: none;
     }
