@@ -36,6 +36,7 @@ npm run preview   # serve the built site
 All photos live in the repo under `src/assets/photos/<folder>/` (one folder per project, plus `about/` for Martha's portraits). Astro resizes them and serves WebP at build time; nothing loads from Squarespace.
 
 - **Add a photo to a project:** drop it in that project's folder. Each project's `photos:` front matter lists its folder(s), and every photo in them appears in the gallery, sorted by filename. The `cover:` photo is shown at the top and left out of the grid.
+- **Name photos for search:** lowercase words joined by hyphens, describing the room and place, numbered for order, e.g. `kitchen-interior-design-portland-07.jpg`. The name carries into the published image URL, and camera names like `DSCF0161.jpg` tell Google nothing.
 - **Before committing new photos, run:**
 
   ```bash
@@ -107,10 +108,11 @@ Setup (one time):
 1. Create a free Resend account and an API key (**API Keys → Create**, "Sending access").
 2. In Cloudflare: Worker (noema) → **Settings → Variables and Secrets**:
    - `RESEND_API_KEY`: the key, as type **Secret**
-   - `CONTACT_TO`: the inbox that should receive inquiries (comma-separate for more than one)
 3. Save. Changes apply right away (`keep_vars` in `wrangler.jsonc` keeps later deploys from wiping them).
 
-Until you verify your domain in Resend, mail is sent from Resend's test address and **can only be delivered to the email you signed up to Resend with**, so use that address for `CONTACT_TO`. For a branded sender and better deliverability, verify `noemainteriors.com` in Resend (it gives you DNS records to add in Cloudflare), then set `CONTACT_FROM` to something like `Noema Website <website@noemainteriors.com>`.
+Inquiries go to `CONTACT_TO`, set under `vars` in `wrangler.jsonc` (comma-separate for more than one). It's martha@noemainteriors.com, which Cloudflare Email Routing forwards to Martha's inbox. Edit it there and push to change it; a value set in the dashboard is replaced on the next deploy.
+
+Until you verify your domain in Resend, mail is sent from Resend's test address and **can only be delivered to the email you signed up to Resend with**, so `CONTACT_TO` must be that address. For a branded sender and better deliverability, verify `noemainteriors.com` in Resend (it gives you DNS records to add in Cloudflare), then set `CONTACT_FROM` to something like `Noema Website <website@noemainteriors.com>`.
 
 With JavaScript on, the form submits in the background, shows errors inline, and sends the visitor to `/thanks`. Without JavaScript it posts normally and the Worker redirects to `/thanks`.
 

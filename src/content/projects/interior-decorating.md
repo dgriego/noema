@@ -2,7 +2,7 @@
 title: Whole-Home Interior Decorating
 description: Interior decorating for a Portland home covering furniture, lighting, wall finishes, window treatments, and styling, layered for color, texture, and personality.
 category: Residential
-cover: ../../assets/photos/bedroom/DGS01649.jpg
+cover: ../../assets/photos/bedroom/bedroom-interior-design-portland-04.jpg
 coverAlt: Bedroom decorated by Noema Interior Design in Portland
 order: 2
 featured: true

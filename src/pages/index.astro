@@ -8,25 +8,25 @@ import { site, bookHref } from '../config/site';
 
 const featured = (await getCollection('projects', (p) => p.data.featured)).sort((a, b) => a.data.order - b.data.order);
 
-import alouetteBar from '../assets/photos/alouette/DSCF0161.jpg';
-import alouetteStorefront from '../assets/photos/alouette/DSCF0193.jpg';
-import alouetteRoom from '../assets/photos/alouette/DSCF0164.jpg';
-import kitchen from '../assets/photos/ne-portland-kitchen/ne-portland-kitchen-02.jpg';
-import kitchenDetail from '../assets/photos/ne-portland-kitchen/ne-portland-kitchen-06.jpg';
-import bedroom from '../assets/photos/bedroom/DGS01649.jpg';
-import nursery from '../assets/photos/nursery/IMG_2023.jpg';
+import alouetteBar from '../assets/photos/alouette/alouette-restaurant-interior-design-portland-11.jpg';
+import alouetteStorefront from '../assets/photos/alouette/alouette-restaurant-interior-design-portland-16.jpg';
+import alouetteRoom from '../assets/photos/alouette/alouette-restaurant-interior-design-portland-13.jpg';
+import kitchen from '../assets/photos/ne-portland-kitchen/kitchen-interior-design-portland-03.jpg';
+import kitchenDetail from '../assets/photos/ne-portland-kitchen/kitchen-interior-design-portland-02.jpg';
+import bedroom from '../assets/photos/bedroom/bedroom-interior-design-portland-04.jpg';
+import nursery from '../assets/photos/nursery/nursery-interior-design-portland-17.jpg';
 import santaFe from '../assets/photos/santa-fe-styling/santa-fe-styling-04.jpg';
 import santaFeLiving from '../assets/photos/santa-fe-styling/santa-fe-styling-01.jpg';
 import portrait from '../assets/photos/about/martha-roark.jpg';
 
 const strip = [
   { src: alouetteBar, href: '/portfolio/restaurant-interior-design', alt: 'Portland restaurant dining room with green banquettes, designed by Noema' },
-  { src: kitchen, href: '/portfolio/kitchen-remodel', alt: 'NE Portland kitchen remodel' },
+  { src: kitchen, href: '/portfolio/kitchen-remodel', alt: 'NE Portland kitchen remodel with white cabinets and a window over the sink' },
   { src: bedroom, href: '/portfolio/interior-decorating', alt: 'Decorated bedroom with art and lamp' },
   { src: santaFe, href: '/portfolio/residential-styling', alt: 'Santa Fe dining room with gallery wall' },
   { src: alouetteStorefront, href: '/portfolio/restaurant-interior-design', alt: 'Restaurant storefront with patio planters' },
   { src: nursery, href: '/portfolio/interior-decorating', alt: 'Blue nursery with cloud rug and crib' },
-  { src: kitchenDetail, href: '/portfolio/kitchen-remodel', alt: 'Kitchen with brass faucet and garden window' },
+  { src: kitchenDetail, href: '/portfolio/kitchen-remodel', alt: 'Portland kitchen with a brass faucet and garden window' },
   { src: santaFeLiving, href: '/portfolio/residential-styling', alt: 'Styled Santa Fe dining area' },
 ];
 

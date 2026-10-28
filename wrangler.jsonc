@@ -19,8 +19,12 @@
     // Only the contact API runs code; every page is served straight from the asset cache.
     "run_worker_first": ["/api/*"]
   },
-  // Secrets and variables (RESEND_API_KEY, CONTACT_TO, CONTACT_FROM) are set in the
-  // dashboard; keep_vars stops a deploy from wiping them.
+  // Where contact form inquiries are sent (forwarded by Cloudflare Email Routing).
+  "vars": {
+    "CONTACT_TO": "martha@noemainteriors.com"
+  },
+  // RESEND_API_KEY and CONTACT_FROM are set in the dashboard; keep_vars stops a deploy
+  // from wiping them.
   "keep_vars": true,
   "observability": { "enabled": true }
 }
